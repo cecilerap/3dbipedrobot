@@ -43,6 +43,7 @@ HRESULT CDirectX3D::InitD3D(HWND hWnd)
 HRESULT CDirectX3D::InitGeometry()
 {
 	g_Body.InitMesh(m_pD3DDevice);
+	g_Body.AddChild(m_pD3DDevice, new CNode(L"ARM_shoulder.X"));
 
 	return S_OK;
 }
@@ -54,6 +55,8 @@ void CDirectX3D::Cleanup()
 
 	if(m_pD3D != NULL)
 		m_pD3D->Release();
+
+	g_Body.CleanUp();
 }
 
 void CDirectX3D::Render()

@@ -4,24 +4,27 @@
 
 #include "AllHeader.h"
 
-CBody g_Body;
+CNode g_Body(L"BODY.X");
 
-CNode::CNode(void) : m_pMesh(NULL), m_pTextures(NULL), m_pMaterials(NULL), m_dwNumMaterials(0)
+CNode::CNode(TCHAR* str) 
+: m_pMesh(NULL), m_pTextures(NULL), m_pMaterials(NULL), m_dwNumMaterials(0),  m_pParent(NULL), m_pChild(NULL)
 {
+	memset(m_str, 0, sizeof(m_str));
+	wcsncpy(m_str, str, wcslen(str));
 }
 
 CNode::~CNode(void)
 {
 }
 
-BOOL CBody::InitMesh(LPDIRECT3DDEVICE9 pD3DDevice)
+BOOL CNode::InitMesh(LPDIRECT3DDEVICE9 pD3DDevice)
 {
 	LPD3DXBUFFER pD3DXMtrlBuffer;
 
-	if(FAILED(D3DXLoadMeshFromX(L"BODY.X", D3DXMESH_IB_SYSTEMMEM, pD3DDevice, NULL,
+	if(FAILED(D3DXLoadMeshFromX(m_str, D3DXMESH_IB_SYSTEMMEM, pD3DDevice, NULL,
 		&pD3DXMtrlBuffer, NULL, &m_dwNumMaterials, &m_pMesh)))
 	{
-		MessageBox(NULL, L"Could not find Body.X", L"BipedTest.exe", MB_OK);
+		MessageBox(NULL, L"Could not find X File", L"BipedTest.exe", MB_OK);
 		return FALSE;
 	}
 
@@ -56,7 +59,7 @@ BOOL CBody::InitMesh(LPDIRECT3DDEVICE9 pD3DDevice)
 	return TRUE;
 }
 
-void CBody::Render(LPDIRECT3DDEVICE9 pD3DDevice)
+void CNode::Render(LPDIRECT3DDEVICE9 pD3DDevice)
 {
 	for(DWORD i = 0; i < m_dwNumMaterials; ++i)
 	{
@@ -68,14 +71,25 @@ void CBody::Render(LPDIRECT3DDEVICE9 pD3DDevice)
 
 		m_pMesh->DrawSubset(i);
 	}
+
+	if(m_pChild != NULL)
+		m_pChild->Render(pD3DDevice);
 }
 
-void CBody::AddChild()
-{
-
-}
-
-void CBody::SetupMatrices()
+void CNode::SetupMatrices()
 {
 	D3DXMatrixRotationX(&m_Matrix, timeGetTime()/500.f);
+}
+
+void CNode::AddChild(LPDIRECT3DDEVICE9 pD3DDevice, CNode* node)
+{
+	m_pChild = node;
+	m_pChild->InitMesh(pD3DDevice);
+	m_pChild->SetupMatrices();
+}
+
+void CNode::CleanUp()
+{
+	if(m_pChild != NULL)
+		delete m_pChild;
 }

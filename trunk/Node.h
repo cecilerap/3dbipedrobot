@@ -7,14 +7,18 @@
 class CNode
 {
 public:
-	CNode(void);
-	~CNode(void);
+	CNode(TCHAR* str);
+	~CNode();
 
-	BOOL InitMesh() {}
-	void Render() {}
-	void AddChild() {}
+	BOOL InitMesh(LPDIRECT3DDEVICE9 pD3DDevice);
+	void Render(LPDIRECT3DDEVICE9 pD3DDevice);
+	void SetupMatrices();
 
-protected:
+	void AddChild(LPDIRECT3DDEVICE9 pD3DDevice, CNode* node);
+	void CleanUp();
+
+private:
+	TCHAR m_str[128];
 	D3DXMATRIXA16 m_Matrix;
 
 	LPD3DXMESH m_pMesh;	
@@ -22,19 +26,6 @@ protected:
 	D3DMATERIAL9* m_pMaterials;
 	DWORD m_dwNumMaterials;
 
-	CNode* m_parent;
-	CNode* m_child;
-};
-
-class CBody : public CNode
-{
-public:
-	CBody() : CNode() {}
-	~CBody() {}
-
-	BOOL InitMesh(LPDIRECT3DDEVICE9 pD3DDevice);
-	void Render(LPDIRECT3DDEVICE9 pD3DDevice);
-	void AddChild();
-
-	void SetupMatrices();
+	CNode* m_pParent;
+	CNode* m_pChild;
 };

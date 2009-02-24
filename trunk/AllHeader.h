@@ -5,6 +5,7 @@
 #pragma once
 
 #include <windows.h>
+#include <memory.h>
 
 #include <d3dx9.h>
 #include <MMSystem.h>
@@ -18,4 +19,4 @@
 #pragma comment(lib, "winmm.lib")
 
 extern CDirectX3D g_DirectX3D;
-extern CBody g_Body;
+extern CNode g_Body;
