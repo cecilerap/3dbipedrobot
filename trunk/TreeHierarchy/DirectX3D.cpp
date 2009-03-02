@@ -52,8 +52,8 @@ void CDirectX3D::InitMatrix()
 	m_pD3DDevice->SetTransform(D3DTS_WORLD, &m_matWorld);
 
 	// View 행렬 설정
-	D3DXVECTOR3 vEyePt(0.0f, 0.0f, 500.0f);			// 눈의 위치
-	D3DXVECTOR3 vLookatPt(0.0f, 0.0f, 0.0f);		// 눈이 바라보는 위치
+	D3DXVECTOR3 vEyePt(0.0f, 0.0f, -100.0f);		// 눈의 위치
+	D3DXVECTOR3 vLookatPt(0.0f, 50.0f, 0.0f);		// 눈이 바라보는 위치
 	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);			// 천정 방향을 나타내는 상방 벡터
 	D3DXMATRIXA16 matView;
 	D3DXMatrixLookAtLH(&matView, &vEyePt, &vLookatPt, &vUpVec);
