@@ -13,7 +13,6 @@ enum COMPONENT { NOTHING = 0, BODY, HEAD,
 
 typedef struct _MESHCOMPONENT
 {
-
 	TCHAR str[32];
 	COMPONENT objectID;
 	COMPONENT parentID;
