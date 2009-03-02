@@ -18,6 +18,7 @@ public:
 	HRESULT InitGeometry();
 	HRESULT InitObjects();
 	void InitMatrix();
+	void InitLights();
 	void DeleteObjects();
 	void Cleanup();
 

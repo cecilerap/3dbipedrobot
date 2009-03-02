@@ -21,15 +21,15 @@ MESHCOMPONENT g_meshComponent[21] =
 	{L"NULL", LEG_LOW_L, LEG_MIDDLE_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
 
 	{L"NULL", FOOT_MOTOR_L, LEG_LOW_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
-	{L"FOOT_L.X", FOOT_L, FOOT_MOTOR_L, {-1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
+	{L"FOOT_L.X", FOOT_L, FOOT_MOTOR_L, {-0.45f,0.f,-0.89f,0.f, 0.f,1.f,0.f,0.f, -0.89f,0.f,-0.45f,0.f, 0.f,0.f,0.f,1.f}},
 
 	{L"NULL", LEG_UP_R, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
 	{L"NULL", LEG_UPMOTOR_R, LEG_UP_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
 	{L"NULL", LEG_MIDDLE_R, LEG_UPMOTOR_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
 	{L"NULL", LEG_LOW_R, LEG_MIDDLE_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
 
-	{L"FOOT_Motor.X", FOOT_MOTOR_R, LEG_LOW_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
-	{L"FOOT_R.X", FOOT_R, FOOT_MOTOR_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
+	{L"NULL", FOOT_MOTOR_R, LEG_LOW_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
+	{L"NULL", FOOT_R, FOOT_MOTOR_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
 };
 
 CNode::CNode(LPDIRECT3DDEVICE9 pD3DDevice, MESHCOMPONENT meshComponent)
@@ -47,6 +47,7 @@ CNode::CNode(LPDIRECT3DDEVICE9 pD3DDevice, MESHCOMPONENT meshComponent)
 						   data[9],data[10],data[11],data[12],data[13],data[14],data[15]);
 //  	D3DXMATRIXA16 matEmpty;
 //  	D3DXMatrixIdentity(&matEmpty);
+//	D3DXMatrixRotationY(&matEmpty, 90);
 	memcpy(&m_matLocal, &matEmpty, sizeof(D3DXMATRIXA16));
 
 	D3DXMatrixIdentity(&m_matAni);
@@ -56,7 +57,7 @@ CNode::CNode(LPDIRECT3DDEVICE9 pD3DDevice, MESHCOMPONENT meshComponent)
 CNode::~CNode(void)
 {
 }
-
+#pragma comment(lib, "winmm.lib")
 D3DXMATRIXA16* CNode::Animate(D3DXMATRIXA16* pParentTM)
 {
 	m_matTM = m_matLocal * m_matAni * *pParentTM;
