@@ -43,7 +43,7 @@ HRESULT CDirectX3D::InitD3D(HWND hWnd)
 HRESULT CDirectX3D::InitGeometry()
 {
 	g_Body.InitMesh(m_pD3DDevice);
-	g_Body.AddChild(m_pD3DDevice, new CNode(L"a.X"));
+	g_Body.AddChild(m_pD3DDevice, new CNode(L"FOOT_L.X"));
 
 	return S_OK;
 }
