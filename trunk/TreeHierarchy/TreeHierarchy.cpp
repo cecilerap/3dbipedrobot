@@ -16,6 +16,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	switch(iMessage)
 	{
+	case WM_LBUTTONUP:
+		g_DirectX3D.FrameMove(UP, LOWORD(lParam), HIWORD(lParam));
+		break;
+	case WM_LBUTTONDOWN:
+		g_DirectX3D.FrameMove(DOWN, LOWORD(lParam), HIWORD(lParam));
+		break;
+
+
+	case WM_MOUSEWHEEL:
+		{
+			if((int)wParam < 0)
+				g_DirectX3D.FrameZoom(DOWN);
+			else
+				g_DirectX3D.FrameZoom(UP);
+		}
+		break;
+
+
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONDBLCLK:
+		SetCapture(hWnd);
+		g_DirectX3D.SetMousePos(LOWORD(lParam), HIWORD(lParam));
+		break;
+	case WM_RBUTTONUP:
+		ReleaseCapture();
+		break;
+
+
+	case WM_MOUSEMOVE:
+		if(MK_LBUTTON & wParam)
+			g_DirectX3D.FrameMove(MOVE, LOWORD(lParam), HIWORD(lParam));
+		else if(MK_RBUTTON & wParam)
+			g_DirectX3D.FrameRotate(LOWORD(lParam), HIWORD(lParam));
+		break;
+	
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
@@ -30,8 +66,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 						   NULL, NULL, (HBRUSH)GetStockObject(WHITE_BRUSH), NULL, L"D3D Tutorial", NULL};
 	RegisterClassEx(&wndClass);
 
-	hWnd = CreateWindow(L"D3D Tutorial", L"BipedTest", WS_OVERLAPPEDWINDOW,
-						100, 100, 800, 800, GetDesktopWindow(), NULL, wndClass.hInstance, NULL);
+	hWnd = CreateWindow(L"D3D Tutorial", L"TreeHierarchy", WS_OVERLAPPEDWINDOW,
+						100, 100, WINDOW_WIDTH, WINDOW_HEIGHT, GetDesktopWindow(), NULL, wndClass.hInstance, NULL);
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
 
 	MSG msg = {0,};

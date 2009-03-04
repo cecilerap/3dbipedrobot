@@ -43,7 +43,7 @@ HRESULT CDirectX3D::InitD3D(HWND hWnd)
 HRESULT CDirectX3D::InitGeometry()
 {
 	g_Body.InitMesh(m_pD3DDevice);
-	g_Body.AddChild(m_pD3DDevice, new CNode(L"FOOT_L.X"));
+	g_Body.AddChild(m_pD3DDevice, new CNode(L"b.X"));
 
 	return S_OK;
 }
@@ -91,7 +91,7 @@ void CDirectX3D::SetupMatrices()
 	m_pD3DDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
 	// View 행렬 설정
-	D3DXVECTOR3 vEyePt(0.0f, 0.0f, 100.0f);			// 눈의 위치
+	D3DXVECTOR3 vEyePt(0.0f, 0.0f, 1000.0f);			// 눈의 위치
 	D3DXVECTOR3 vLookatPt(0.0f, 0.0f, 0.0f);		// 눈이 바라보는 위치
 	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);			// 천정 방향을 나타내는 상방 벡터
 	D3DXMATRIXA16 matView;
@@ -106,28 +106,29 @@ void CDirectX3D::SetupMatrices()
 
 void CDirectX3D::SetupLights()
 {
-	// 재질 설정
-	D3DMATERIAL9 mtrl;
-	ZeroMemory(&mtrl, sizeof(D3DMATERIAL9));
-	mtrl.Diffuse.r = mtrl.Ambient.r = 1.0f;
-	mtrl.Diffuse.g = mtrl.Ambient.g = 1.0f;
-	mtrl.Diffuse.b = mtrl.Ambient.b = 0.0f;
-	mtrl.Diffuse.a = mtrl.Ambient.a = 1.0f;
-	m_pD3DDevice->SetMaterial(&mtrl);
-
-	// 광원 설정
-	D3DXVECTOR3 vecDir;
-	D3DLIGHT9 light;
-	ZeroMemory(&light, sizeof(D3DLIGHT9));
-	light.Type = D3DLIGHT_DIRECTIONAL;
-	light.Diffuse.r = 1.0f;
-	light.Diffuse.g = 1.0f;
-	light.Diffuse.b = 1.0f;
-	vecDir = D3DXVECTOR3(cosf(timeGetTime()/350.0f), 1.0f, sinf(timeGetTime()/350.0f));
-	D3DXVec3Normalize((D3DXVECTOR3*)&light.Direction, &vecDir);
-	light.Range = 1000.0f;
-	m_pD3DDevice->SetLight(0, &light);
-	m_pD3DDevice->LightEnable(0, TRUE);
-	m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-	m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, 0x00202020);
+// 	// 재질 설정
+// 	D3DMATERIAL9 mtrl;
+// 	ZeroMemory(&mtrl, sizeof(D3DMATERIAL9));
+// 	mtrl.Diffuse.r = mtrl.Ambient.r = 1.0f;
+// 	mtrl.Diffuse.g = mtrl.Ambient.g = 1.0f;
+// 	mtrl.Diffuse.b = mtrl.Ambient.b = 1.0f;
+// 	mtrl.Diffuse.a = mtrl.Ambient.a = 1.0f;
+// 	m_pD3DDevice->SetMaterial(&mtrl);
+// 
+// 	// 광원 설정
+// 	D3DXVECTOR3 vecDir;
+// 	D3DLIGHT9 light;
+// 	ZeroMemory(&light, sizeof(D3DLIGHT9));
+// 	light.Type = D3DLIGHT_DIRECTIONAL;
+// 	light.Diffuse.r = 1.0f;
+// 	light.Diffuse.g = 1.0f;
+// 	light.Diffuse.b = 1.0f;
+// 	vecDir = D3DXVECTOR3(cosf(350.0f), 1.0f, sinf(350.0f));
+// 	D3DXVec3Normalize((D3DXVECTOR3*)&light.Direction, &vecDir);
+// 	light.Range = 1000.0f;
+// 
+// 	m_pD3DDevice->SetLight(0, &light);
+// 	m_pD3DDevice->LightEnable(0, TRUE);
+// 	m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+// 	m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, 0x00202020);
 }
