@@ -5,6 +5,7 @@
 #include "DirectX3D.h"
 
 CDirectX3D::CDirectX3D(void)
+: m_bMove(FALSE)
 {
 }
 
@@ -51,8 +52,24 @@ void CDirectX3D::InitMatrix()
 	D3DXMatrixIdentity(&m_matWorld);
 	m_pD3DDevice->SetTransform(D3DTS_WORLD, &m_matWorld);
 
+// 	// View 행렬 설정
+// 	D3DXVECTOR3 vEyePt(200.0f, -200.0f, -300.0f);		// 눈의 위치
+// 	D3DXVECTOR3 vLookatPt(0.0f, 50.0f, 0.0f);		// 눈이 바라보는 위치
+// 	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);			// 천정 방향을 나타내는 상방 벡터
+// 	D3DXMATRIXA16 matView;
+// 	D3DXMatrixLookAtLH(&matView, &vEyePt, &vLookatPt, &vUpVec);
+// 	m_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
+
+// 	// View 행렬 설정
+// 	D3DXVECTOR3 vEyePt(0.0f, -50.0f, -300.0f);		// 눈의 위치
+// 	D3DXVECTOR3 vLookatPt(0.0f, 0.0f, 0.0f);		// 눈이 바라보는 위치
+// 	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);			// 천정 방향을 나타내는 상방 벡터
+// 	D3DXMATRIXA16 matView;
+// 	D3DXMatrixLookAtLH(&matView, &vEyePt, &vLookatPt, &vUpVec);
+// 	m_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
+
 	// View 행렬 설정
-	D3DXVECTOR3 vEyePt(0.0f, 0.0f, -100.0f);		// 눈의 위치
+	D3DXVECTOR3 vEyePt(0.0f, 0.0f, -300.0f);		// 눈의 위치
 	D3DXVECTOR3 vLookatPt(0.0f, 50.0f, 0.0f);		// 눈이 바라보는 위치
 	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);			// 천정 방향을 나타내는 상방 벡터
 	D3DXMATRIXA16 matView;
@@ -60,20 +77,22 @@ void CDirectX3D::InitMatrix()
 	m_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
 
 	// Projection 행렬 설정
-	D3DXMatrixPerspectiveFovLH(&m_matProj, D3DX_PI/4, 1.0f, 500.0f, 1.0f);
+	D3DXMatrixPerspectiveFovLH(&m_matProj, D3DX_PI/4, 1.0f, 1000.0f, 1.0f);
 	m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
+
+	m_pCamera->SetView(&vEyePt, &vLookatPt, &vUpVec);
 }
-#pragma comment(lib, "winmm.lib")
+
 void CDirectX3D::InitLights()
 {
-// 	// 재질 설정
-// 	D3DMATERIAL9 mtrl;
-// 	ZeroMemory(&mtrl, sizeof(D3DMATERIAL9));
-// 	mtrl.Diffuse.r = mtrl.Ambient.r = 1.0f;
-// 	mtrl.Diffuse.g = mtrl.Ambient.g = 1.0f;
-// 	mtrl.Diffuse.b = mtrl.Ambient.b = 0.0f;
-// 	mtrl.Diffuse.a = mtrl.Ambient.a = 1.0f;
-// 	m_pD3DDevice->SetMaterial(&mtrl);
+	// 재질 설정
+	D3DMATERIAL9 mtrl;
+	ZeroMemory(&mtrl, sizeof(D3DMATERIAL9));
+	mtrl.Diffuse.r = mtrl.Ambient.r = 1.0f;
+	mtrl.Diffuse.g = mtrl.Ambient.g = 1.0f;
+	mtrl.Diffuse.b = mtrl.Ambient.b = 0.0f;
+	mtrl.Diffuse.a = mtrl.Ambient.a = 1.0f;
+	m_pD3DDevice->SetMaterial(&mtrl);
 
 	// 광원 설정
 	D3DXVECTOR3 vecDir;
@@ -83,7 +102,7 @@ void CDirectX3D::InitLights()
 	light.Diffuse.r = 1.0f;
 	light.Diffuse.g = 1.0f;
 	light.Diffuse.b = 1.0f;
-	vecDir = D3DXVECTOR3(cosf(timeGetTime()/350.0f), 1.0f, sinf(timeGetTime()/350.0f));
+	vecDir = D3DXVECTOR3(0.0f, 100.0f, -300.0f);
 	D3DXVec3Normalize((D3DXVECTOR3*)&light.Direction, &vecDir);
 	light.Range = 1000.0f;
 
@@ -97,6 +116,8 @@ void CDirectX3D::InitLights()
 HRESULT CDirectX3D::InitObjects()
 {
 	m_pNodeMgr = new CNodeMgr(m_pD3DDevice);
+	m_pCamera  = new CCamera;
+
 	return S_OK;
 }
 
@@ -126,7 +147,7 @@ void CDirectX3D::Render()
 		return;
 
 	// 후면 버퍼를 초기화
-	m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,255), 1.0f, 0);
+	m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(180,250,250), 1.0f, 0);
 
 	Animate();
 
@@ -139,4 +160,53 @@ void CDirectX3D::Render()
 	}
 
 	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);
+}
+
+void CDirectX3D::FrameMove(MOUSE mouse, int x, int y)
+{
+	if(mouse == DOWN/* && m_bMove == FALSE*/)
+		m_curPt.x = x, m_curPt.y = y, m_bMove = TRUE;
+
+	if(mouse == MOVE && m_bMove == TRUE)
+	{
+		float fDelta = 0.001f;
+
+		int dx = m_curPt.x - x;
+		int dy = m_curPt.y - y;
+
+		m_pCamera->RotateLocalX(dy*fDelta);
+		m_pCamera->RotateLocalY(dx*fDelta);
+		D3DXMATRIXA16* pmatView = m_pCamera->GetViewMatrix();
+		m_pD3DDevice->SetTransform(D3DTS_VIEW, pmatView);
+
+		m_curPt.x = x;
+		m_curPt.y = y;
+	}
+
+	if(mouse == UP/* && m_bMove == TRUE*/)
+		m_bMove = FALSE;
+}
+
+void CDirectX3D::FrameZoom(MOUSE mouse)
+{
+	if(mouse == UP)
+	{
+		m_pCamera->MoveLocalX(10.f);
+ 		m_pCamera->MoveLocalY(10.f);
+ 		m_pCamera->MoveLocalZ(10.f);
+	}
+	else if(mouse == DOWN)
+	{
+		m_pCamera->MoveLocalX(-10.f);
+ 		m_pCamera->MoveLocalY(-10.f);
+ 		m_pCamera->MoveLocalZ(-10.f);
+	}
+
+	D3DXMATRIXA16* pmatView = m_pCamera->GetViewMatrix();
+	m_pD3DDevice->SetTransform(D3DTS_VIEW, pmatView);
+
+}
+
+void CDirectX3D::FrameRotate(int x, int y)
+{
 }

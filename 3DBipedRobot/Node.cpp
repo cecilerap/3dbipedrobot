@@ -4,7 +4,7 @@
 
 #include "AllHeader.h"
 
-CNode g_Body(L"FOOT_L.X");
+CNode g_Body(L"b.X");
 
 CNode::CNode(TCHAR* str) 
 : m_pMesh(NULL), m_pTextures(NULL), m_pMaterials(NULL), m_dwNumMaterials(0),  m_pParent(NULL), m_pChild(NULL)

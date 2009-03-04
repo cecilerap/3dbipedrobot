@@ -20,17 +20,17 @@ void CMesh::LoadMesh(TCHAR* str)
 		return;
 
 	LPD3DXBUFFER pD3DXMtrlBuffer;
-
+	
 	TCHAR strTemp[32] = {0,};
 	wsprintfW(strTemp, L"X\\%s", str);
-	if(FAILED(D3DXLoadMeshFromX(strTemp, D3DXMESH_IB_SYSTEMMEM, m_pD3DDevice, NULL,
+	if(FAILED(D3DXLoadMeshFromX(strTemp, D3DXMESH_SYSTEMMEM, m_pD3DDevice, NULL,
 								&pD3DXMtrlBuffer, NULL, &m_dwNumMaterials, &m_pMesh)))
 	{
 		MessageBox(NULL, strTemp, L"BipedTest.exe", MB_OK);
 		return;
 	}
 
-	D3DXMATERIAL* d3dxMaterials = (D3DXMATERIAL*)(pD3DXMtrlBuffer);
+	D3DXMATERIAL* d3dxMaterials = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
 	m_pMaterials = new D3DMATERIAL9[m_dwNumMaterials];
 	m_pTextures = new LPDIRECT3DTEXTURE9[m_dwNumMaterials];
 
