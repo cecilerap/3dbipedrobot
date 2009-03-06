@@ -5,7 +5,6 @@
 #include "DirectX3D.h"
 
 CDirectX3D::CDirectX3D(void)
-: m_bMove(FALSE)
 {
 }
 
@@ -52,35 +51,14 @@ void CDirectX3D::InitMatrix()
 	D3DXMatrixIdentity(&m_matWorld);
 	m_pD3DDevice->SetTransform(D3DTS_WORLD, &m_matWorld);
 
-// 	// View 행렬 설정
-// 	D3DXVECTOR3 vEyePt(200.0f, -200.0f, -300.0f);		// 눈의 위치
-// 	D3DXVECTOR3 vLookatPt(0.0f, 50.0f, 0.0f);		// 눈이 바라보는 위치
-// 	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);			// 천정 방향을 나타내는 상방 벡터
-// 	D3DXMATRIXA16 matView;
-// 	D3DXMatrixLookAtLH(&matView, &vEyePt, &vLookatPt, &vUpVec);
-// 	m_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
-
-// 	// View 행렬 설정
-// 	D3DXVECTOR3 vEyePt(0.0f, -50.0f, -300.0f);		// 눈의 위치
-// 	D3DXVECTOR3 vLookatPt(0.0f, 0.0f, 0.0f);		// 눈이 바라보는 위치
-// 	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);			// 천정 방향을 나타내는 상방 벡터
-// 	D3DXMATRIXA16 matView;
-// 	D3DXMatrixLookAtLH(&matView, &vEyePt, &vLookatPt, &vUpVec);
-// 	m_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
-
 	// View 행렬 설정
-	D3DXVECTOR3 vEyePt(0.0f, 0.0f, -300.0f);		// 눈의 위치
-	D3DXVECTOR3 vLookatPt(0.0f, 50.0f, 0.0f);		// 눈이 바라보는 위치
-	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);			// 천정 방향을 나타내는 상방 벡터
 	D3DXMATRIXA16 matView;
-	D3DXMatrixLookAtLH(&matView, &vEyePt, &vLookatPt, &vUpVec);
+	D3DXMatrixLookAtLH(&matView, &m_pCamera->m_vEyePt, &m_pCamera->m_vLookatPt, &m_pCamera->m_vUpVec);
 	m_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
 
 	// Projection 행렬 설정
 	D3DXMatrixPerspectiveFovLH(&m_matProj, D3DX_PI/4, 1.0f, 1000.0f, 1.0f);
 	m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
-
-	m_pCamera->SetView(&vEyePt, &vLookatPt, &vUpVec);
 }
 
 void CDirectX3D::InitLights()
@@ -116,14 +94,18 @@ void CDirectX3D::InitLights()
 HRESULT CDirectX3D::InitObjects()
 {
 	m_pNodeMgr = new CNodeMgr(m_pD3DDevice);
-	m_pCamera  = new CCamera;
+	m_pCamera  = new CAMERA(m_pD3DDevice);
 
 	return S_OK;
 }
 
 void CDirectX3D::DeleteObjects()
 {
+	if(m_pNodeMgr != NULL)
+		delete m_pNodeMgr;
 
+	if(m_pCamera != NULL)
+		delete m_pCamera;
 }
 
 void CDirectX3D::Cleanup()
@@ -161,52 +143,31 @@ void CDirectX3D::Render()
 
 	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
-
-void CDirectX3D::FrameMove(MOUSE mouse, int x, int y)
+  
+void CDirectX3D::SetMousePos(int x, int y)
 {
-	if(mouse == DOWN/* && m_bMove == FALSE*/)
-		m_curPt.x = x, m_curPt.y = y, m_bMove = TRUE;
-
-	if(mouse == MOVE && m_bMove == TRUE)
-	{
-		float fDelta = 0.001f;
-
-		int dx = m_curPt.x - x;
-		int dy = m_curPt.y - y;
-
-		m_pCamera->RotateLocalX(dy*fDelta);
-		m_pCamera->RotateLocalY(dx*fDelta);
-		D3DXMATRIXA16* pmatView = m_pCamera->GetViewMatrix();
-		m_pD3DDevice->SetTransform(D3DTS_VIEW, pmatView);
-
-		m_curPt.x = x;
-		m_curPt.y = y;
-	}
-
-	if(mouse == UP/* && m_bMove == TRUE*/)
-		m_bMove = FALSE;
+	m_curPt.x = x, m_curPt.y = y;
 }
 
-void CDirectX3D::FrameZoom(MOUSE mouse)
-{
-	if(mouse == UP)
-	{
-		m_pCamera->MoveLocalX(10.f);
- 		m_pCamera->MoveLocalY(10.f);
- 		m_pCamera->MoveLocalZ(10.f);
-	}
-	else if(mouse == DOWN)
-	{
-		m_pCamera->MoveLocalX(-10.f);
- 		m_pCamera->MoveLocalY(-10.f);
- 		m_pCamera->MoveLocalZ(-10.f);
-	}
+void CDirectX3D::CameraMove(int x, int y)
+{	
+	float fDelta = 0.05f;
 
-	D3DXMATRIXA16* pmatView = m_pCamera->GetViewMatrix();
-	m_pD3DDevice->SetTransform(D3DTS_VIEW, pmatView);
+	int dx = m_curPt.x - x;
+	int dy = m_curPt.y - y;
 
+	m_pCamera->m_vEyePt.x += (dx*fDelta);
+	m_pCamera->m_vEyePt.y += (dy*fDelta);
+
+	m_pCamera->SetCamera();
 }
 
-void CDirectX3D::FrameRotate(int x, int y)
+void CDirectX3D::CameraZoom(int nWheel)
 {
+	if(nWheel < 0)
+		m_pCamera->m_vEyePt.z += (-10);
+	else
+		m_pCamera->m_vEyePt.z += ( 10);
+
+	m_pCamera->SetCamera();
 }

@@ -21,7 +21,7 @@ CNodeMgr::~CNodeMgr(void)
 			free(m_nodes[i]);
 	}
 }
-
+#pragma comment(lib, "winmm.lib")
 void CNodeMgr::Animate()
 {
 	int id;
@@ -31,6 +31,11 @@ void CNodeMgr::Animate()
 	{
 		id = m_nodes[i]->GetParentID();
 		pTM = m_nodes[id]->GetMatrixTM();
+		
+		//////////////////////////////////////////////////////////////////////////
+		m_nodes[i]->SetAngle(timeGetTime()/2000.f);
+		//////////////////////////////////////////////////////////////////////////
+		
 		m_nodes[i]->Animate(pTM);
 	}
 }

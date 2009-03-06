@@ -32,6 +32,8 @@ public:
 	D3DXMATRIXA16* Animate(D3DXMATRIXA16* pParentTM);
 	virtual void Draw() {}
 
+	void SetAngle(float angle);
+
 protected:
 	COMPONENT m_nObjectID;
 	COMPONENT m_nParentID;
@@ -41,6 +43,8 @@ protected:
 	D3DXMATRIXA16 m_matTM;			// 최종 출력 행렬, 변화
 
 	LPDIRECT3DDEVICE9 m_pD3DDevice;
+
+	float m_angle;
 };
 
 
