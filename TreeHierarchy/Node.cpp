@@ -109,25 +109,15 @@ void CNode::SetAngle(float angle)
 		break;
 	case ARM_LOW_L: // аб©Л╥н
 	case ARM_LOW_R:
-		m_angle = -0.3f;
+		m_angle = 0.3f;
 		if(m_angle < -0.3f)	m_angle = -0.3f;
 		if(m_angle >  0.3f)	m_angle =  0.3f;
 
 		if(m_angle < 0)	D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3( 1.f,  1.f,  1.f), m_angle);
 		else			D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3(-1.f, -1.f, -1.f), m_angle);
-
 		break;
 	case ARM_MIDDLE_L: // аб©Л╥н
 	case ARM_MIDDLE_R: 
 		break;
 	}
 }
-
-
-// {
-// 	int nSign;
-// 	if(m_angle <   0.f)	m_angle =   0.f, nSign =  1;
-// 	if(m_angle >   2.f)	m_angle =   2.f, nSign = -1;
-// 	D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3(1.f*nSign, 1.f*nSign, 1.f*nSign), m_angle);
-// 	//			D3DXMatrixRotationY(&m_matAni, 0.3f);
-// }
