@@ -44,7 +44,7 @@ void CNodeMgr::Draw()
 {
 	for(int i = 0; i < m_nodes.size(); ++i)
 	{
-		m_pD3DDevice->SetTransform(D3DTS_WORLD, &m_matTM);
+		m_pD3DDevice->MultiplyTransform(D3DTS_WORLD, &m_matTM);
 		m_nodes[i]->Draw();
 	}
 }
