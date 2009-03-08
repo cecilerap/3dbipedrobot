@@ -118,6 +118,9 @@ void CNode::SetAngle(float angle)
 		break;
 	case ARM_MIDDLE_L: // аб©Л╥н
 	case ARM_MIDDLE_R: 
+//		if(m_angle < -10.f)	m_angle = -10.f;
+//		if(m_angle >  10.f)	m_angle =  10.f;
+//		D3DXMatrixRotationZ(&m_matAni, -10.f);
 		break;
 	}
 }

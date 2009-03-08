@@ -34,10 +34,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_MOUSEMOVE:
-		if(MK_LBUTTON & wParam)
-			g_DirectX3D.CameraMove(LOWORD(lParam), HIWORD(lParam));
-//		else if(MK_RBUTTON & wParam)
-//			g_DirectX3D.CameraRotate(LOWORD(lParam), HIWORD(lParam));
+		{
+			RECT rt;
+			GetClientRect(hWnd, &rt);
+			POINT pt;
+			pt.x = LOWORD(lParam), pt.y = HIWORD(lParam);
+			if(!PtInRect(&rt, pt))
+				break;
+			if(MK_LBUTTON & wParam)
+				g_DirectX3D.CameraMove(LOWORD(lParam), HIWORD(lParam));
+		}		
 		break;
 
 	case WM_MOUSEWHEEL:
