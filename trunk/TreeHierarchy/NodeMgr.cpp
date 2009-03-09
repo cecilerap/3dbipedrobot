@@ -27,7 +27,7 @@ void CNodeMgr::Animate()
 	int id;
 	D3DXMATRIXA16* pTM;
 
-	for(int i = 0; i < m_nodes.size(); ++i)
+	for(DWORD i = 0; i < m_nodes.size(); ++i)
 	{
 		id = m_nodes[i]->GetParentID();
 		pTM = m_nodes[id]->GetMatrixTM();
@@ -42,7 +42,7 @@ void CNodeMgr::Animate()
 
 void CNodeMgr::Draw()
 {
-	for(int i = 0; i < m_nodes.size(); ++i)
+	for(DWORD i = 0; i < m_nodes.size(); ++i)
 	{
 		m_pD3DDevice->MultiplyTransform(D3DTS_WORLD, &m_matTM);
 		m_nodes[i]->Draw();

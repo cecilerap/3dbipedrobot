@@ -4,15 +4,20 @@
 
 #include "Camera.h"
 
+#define PI				((float)(3.141592654f))
+#define DEG2RAD(deg)	((deg)*(PI/180.f))
+#define RAD2DEG(rad)	((rad)*(180.f/PI))
+
+
 void CCamera::SetCamera()
 {
-	if(fabs(m_vEyePt.x) > 250)		m_vEyePt.x = 250*(m_vEyePt.x<0?-1:1);
-	if(fabs(m_vEyePt.y) > 250)		m_vEyePt.y = 250*(m_vEyePt.y<0?-1:1);
-	if(m_vEyePt.z >  -50)	m_vEyePt.z =  -50;
-	if(m_vEyePt.z < -900)	m_vEyePt.z = -900;
+	float theta = DEG2RAD(m_posTheta);
+	float phi = DEG2RAD(m_posPhi);
+	
+	D3DXVECTOR3 pos((float)(m_radius*cos(theta)*cos(phi)), (float)(m_radius*sin(phi)), (float)(m_radius*sin(theta)*cos(phi)));
 
 	D3DXMATRIXA16 matView;
-	D3DXMatrixLookAtLH(&matView, &m_vEyePt, &m_vLookatPt, &m_vUpVec);
+	D3DXMatrixLookAtLH(&matView, &pos, &D3DXVECTOR3(0.f,0.f,0.f), &D3DXVECTOR3(0.f,1.f,0.f));
 	m_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
 }
 
@@ -25,21 +30,28 @@ void CCamera::Move(int x, int y)
 {	
 	float fDelta = 0.05f;
 
-	int dx = m_curPt.x - x;
+	int dx = x - m_curPt.x;
 	int dy = m_curPt.y - y;
 
-	m_vEyePt.x += (dx*fDelta);
-	m_vEyePt.y += (dy*fDelta);
+	m_posTheta += (dx*fDelta);
+	m_posPhi   += (dy*fDelta);
+
+	if(m_posPhi >= 90.f)		m_posPhi =  89.9999f;
+	else if(m_posPhi <= -90.f)	m_posPhi = -89.9999f;
+
+	if(m_posTheta > 360.f)		m_posTheta -= 360.f;
+	else if(m_posTheta < 0.f)	m_posTheta += 360.f;
 
 	SetCamera();
 }
 
 void CCamera::Zoom(int nWheel)
 {
-	if(nWheel < 0)
-		m_vEyePt.z += (-10);
-	else
-		m_vEyePt.z += ( 10);
+	if(nWheel < 0)		m_radius += ( 10.f);
+	else				m_radius += (-10.f);
+
+	if(m_radius <= 0.f)			m_radius = 0.f;
+	else if(m_radius >= 500.f)	m_radius = 500.f;
 
 	SetCamera();
 }
