@@ -18,7 +18,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_LBUTTONDOWN:
 		SetCapture(hWnd);
-		g_DirectX3D.SetMousePos(LOWORD(lParam), HIWORD(lParam));
+		g_DirectX3D.m_pCamera->SetMousePos(LOWORD(lParam), HIWORD(lParam));
 		break;
 	case WM_LBUTTONUP:
 		ReleaseCapture();
@@ -27,7 +27,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_RBUTTONDOWN:
 	case WM_RBUTTONDBLCLK:
 		SetCapture(hWnd);
-		g_DirectX3D.SetMousePos(LOWORD(lParam), HIWORD(lParam));
+		g_DirectX3D.m_pCamera->SetMousePos(LOWORD(lParam), HIWORD(lParam));
 		break;
 	case WM_RBUTTONUP:
 		ReleaseCapture();
@@ -42,12 +42,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			if(!PtInRect(&rt, pt))
 				break;
 			if(MK_LBUTTON & wParam)
-				g_DirectX3D.CameraMove(LOWORD(lParam), HIWORD(lParam));
+				g_DirectX3D.m_pCamera->Move(LOWORD(lParam), HIWORD(lParam));
 		}		
 		break;
 
 	case WM_MOUSEWHEEL:
-		g_DirectX3D.CameraZoom((int)wParam);
+		g_DirectX3D.m_pCamera->Zoom((int)wParam);
 		break;
 
 	case WM_DESTROY:
