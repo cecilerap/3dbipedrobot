@@ -6,7 +6,7 @@
 
 MESHCOMPONENT g_meshComponent[22] = 
 {
-	{L"NULL", BACKGROUND, NOTHING, {1.f,0.f,0.f,0.f, 0.f,0.f,-1.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,0.f,1.f}},
+	{L"NULL", BACKGROUND, NOTHING, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
 
 	{L"NULL", NOTHING, NOTHING, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
 	{L"BODY.X", BODY, NOTHING, {1.f,0.f,0.f,0.f, 0.f,0.f,-1.f,0.f, 0.f,1.f,0.f,0.f, 0.f,50.f,0.f,1.f}},
@@ -125,7 +125,7 @@ void CNode::SetAngle(float angle)
 		break;
 	case ARM_MIDDLE_L: // аб©Л╥н
 	case ARM_MIDDLE_R: 
-		m_angle = 0.3f;
+		m_angle = -0.3f;
 		if(m_angle < -0.3f)	m_angle = -0.3f;
 		if(m_angle >  0.3f)	m_angle =  0.3f;
 

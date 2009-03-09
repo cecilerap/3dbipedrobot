@@ -41,6 +41,7 @@ HRESULT CDirectX3D::InitGeometry()
 {
 	InitMatrix();
 	InitLights();
+//	InitBackVertex();
 
 	return S_OK;
 }
@@ -91,10 +92,43 @@ void CDirectX3D::InitLights()
 	m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, 0x00202020);
 }
 
+struct CUSTOMVERTEX
+{
+	FLOAT x, y, z;      // The untransformed, 3D position for the vertex
+	DWORD color;        // The vertex color
+};
+
+// Our custom FVF, which describes our custom vertex structure
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE)
+
+void CDirectX3D::InitBackVertex()
+{
+	CUSTOMVERTEX g_Vertices[] =
+	{
+		{ -1.0f,-1.0f, 0.0f, 0xffff0000, },
+		{  1.0f,-1.0f, 0.0f, 0xff0000ff, },
+		{  0.0f, 5.0f, 0.0f, 0xffffffff, },
+	};
+
+	if( FAILED( m_pD3DDevice->CreateVertexBuffer( 3 * sizeof( CUSTOMVERTEX ),
+		0, D3DFVF_CUSTOMVERTEX,
+		D3DPOOL_DEFAULT, &m_pBackVB, NULL ) ) )
+	{
+		return;
+	}
+
+	// Fill the vertex buffer.
+	VOID* pVertices;
+	if( FAILED( m_pBackVB->Lock( 0, sizeof( g_Vertices ), ( void** )&pVertices, 0 ) ) )
+		return;
+	memcpy( pVertices, g_Vertices, sizeof( g_Vertices ) );
+	m_pBackVB->Unlock();
+}
+
 HRESULT CDirectX3D::InitObjects()
 {
 	m_pNodeMgr = new CNodeMgr(m_pD3DDevice);
-	m_pCamera  = new CAMERA(m_pD3DDevice);
+	m_pCamera  = new CCamera(m_pD3DDevice);
 
 	return S_OK;
 }
@@ -110,6 +144,9 @@ void CDirectX3D::DeleteObjects()
 
 void CDirectX3D::Cleanup()
 {
+	if(m_pBackVB != NULL)
+		m_pBackVB->Release();
+
 	if(m_pD3DDevice != NULL)
 		m_pD3DDevice->Release();
 
@@ -135,6 +172,11 @@ void CDirectX3D::Render()
 
 	if(SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
+// 		// Render the vertex buffer contents
+// 		m_pD3DDevice->SetStreamSource( 0, m_pBackVB, 0, sizeof( CUSTOMVERTEX ) );
+// 		m_pD3DDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
+// 		m_pD3DDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 1 );
+
 		// mesh 그려주는 작업
 		m_pNodeMgr->Draw();
 
@@ -142,32 +184,4 @@ void CDirectX3D::Render()
 	}
 
 	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);
-}
-  
-void CDirectX3D::SetMousePos(int x, int y)
-{
-	m_curPt.x = x, m_curPt.y = y;
-}
-
-void CDirectX3D::CameraMove(int x, int y)
-{	
-	float fDelta = 0.05f;
-
-	int dx = m_curPt.x - x;
-	int dy = m_curPt.y - y;
-
-	m_pCamera->m_vEyePt.x += (dx*fDelta);
-	m_pCamera->m_vEyePt.y += (dy*fDelta);
-
-	m_pCamera->SetCamera();
-}
-
-void CDirectX3D::CameraZoom(int nWheel)
-{
-	if(nWheel < 0)
-		m_pCamera->m_vEyePt.z += (-10);
-	else
-		m_pCamera->m_vEyePt.z += ( 10);
-
-	m_pCamera->SetCamera();
 }
