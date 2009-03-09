@@ -23,7 +23,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONUP:
 		ReleaseCapture();
 		break;
-
 	case WM_RBUTTONDOWN:
 	case WM_RBUTTONDBLCLK:
 		SetCapture(hWnd);

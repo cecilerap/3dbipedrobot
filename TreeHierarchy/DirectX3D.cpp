@@ -4,6 +4,8 @@
 
 #include "DirectX3D.h"
 
+#pragma warning(disable:4996)
+
 CDirectX3D::CDirectX3D(void)
 {
 }
@@ -15,6 +17,8 @@ CDirectX3D::~CDirectX3D(void)
 // User Function
 HRESULT CDirectX3D::InitD3D(HWND hWnd)
 {
+	m_hWnd = hWnd;
+
 	// Device 생성하기 위한 D3D 객체 생성
 	if(NULL == (m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
 		return E_FAIL;
@@ -41,7 +45,8 @@ HRESULT CDirectX3D::InitGeometry()
 {
 	InitMatrix();
 	InitLights();
-//	InitBackVertex();
+	InitBackVertex();
+	InitXYZVertex();
 
 	return S_OK;
 }
@@ -52,10 +57,8 @@ void CDirectX3D::InitMatrix()
 	D3DXMatrixIdentity(&m_matWorld);
 	m_pD3DDevice->SetTransform(D3DTS_WORLD, &m_matWorld);
 
-	// View 행렬 설정
-	D3DXMATRIXA16 matView;
-	D3DXMatrixLookAtLH(&matView, &m_pCamera->m_vEyePt, &m_pCamera->m_vLookatPt, &m_pCamera->m_vUpVec);
-	m_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
+ 	// View 행렬 설정
+	m_pCamera->SetCamera();
 
 	// Projection 행렬 설정
 	D3DXMatrixPerspectiveFovLH(&m_matProj, D3DX_PI/4, 1.0f, 1000.0f, 1.0f);
@@ -67,10 +70,7 @@ void CDirectX3D::InitLights()
 	// 재질 설정
 	D3DMATERIAL9 mtrl;
 	ZeroMemory(&mtrl, sizeof(D3DMATERIAL9));
-	mtrl.Diffuse.r = mtrl.Ambient.r = 1.0f;
-	mtrl.Diffuse.g = mtrl.Ambient.g = 1.0f;
-	mtrl.Diffuse.b = mtrl.Ambient.b = 0.0f;
-	mtrl.Diffuse.a = mtrl.Ambient.a = 1.0f;
+	mtrl.Diffuse = mtrl.Ambient = D3DXCOLOR(0xffffffff);
 	m_pD3DDevice->SetMaterial(&mtrl);
 
 	// 광원 설정
@@ -78,10 +78,9 @@ void CDirectX3D::InitLights()
 	D3DLIGHT9 light;
 	ZeroMemory(&light, sizeof(D3DLIGHT9));
 	light.Type = D3DLIGHT_DIRECTIONAL;
-	light.Diffuse.r = 1.0f;
-	light.Diffuse.g = 1.0f;
-	light.Diffuse.b = 1.0f;
-	vecDir = D3DXVECTOR3(0.0f, 100.0f, -300.0f);
+	light.Diffuse = D3DXCOLOR(0xffffffff);
+	light.Ambient = D3DXCOLOR(0xff202020);
+	vecDir = D3DXVECTOR3(0.0f, 1.0f, -300.0f);
 	D3DXVec3Normalize((D3DXVECTOR3*)&light.Direction, &vecDir);
 	light.Range = 1000.0f;
 
@@ -92,43 +91,73 @@ void CDirectX3D::InitLights()
 	m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, 0x00202020);
 }
 
-struct CUSTOMVERTEX
+struct CUSTOMVERTEXBACK
 {
-	FLOAT x, y, z;      // The untransformed, 3D position for the vertex
-	DWORD color;        // The vertex color
+	D3DXVECTOR3 position;
+	D3DXVECTOR3 normal;
 };
 
-// Our custom FVF, which describes our custom vertex structure
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE)
+struct CUSTOMVERTEXXYZ
+{
+	D3DXVECTOR3 position;
+	D3DXCOLOR color;
+};
 
 void CDirectX3D::InitBackVertex()
 {
-	CUSTOMVERTEX g_Vertices[] =
-	{
-		{ -1.0f,-1.0f, 0.0f, 0xffff0000, },
-		{  1.0f,-1.0f, 0.0f, 0xff0000ff, },
-		{  0.0f, 5.0f, 0.0f, 0xffffffff, },
-	};
+	// 평면 vertex
+	CUSTOMVERTEXBACK vertices[] = {	{D3DXVECTOR3(-150.f, 200.f,-4.f),D3DXVECTOR3(1.f,1.f,1.f)},
+									{D3DXVECTOR3( 150.f, 200.f,-4.f),D3DXVECTOR3(1.f,1.f,1.f)},
+									{D3DXVECTOR3(-150.f,-500.f,-4.f),D3DXVECTOR3(1.f,1.f,1.f)},
+									{D3DXVECTOR3( 150.f,-500.f,-4.f),D3DXVECTOR3(1.f,1.f,1.f)} };
 
-	if( FAILED( m_pD3DDevice->CreateVertexBuffer( 3 * sizeof( CUSTOMVERTEX ),
-		0, D3DFVF_CUSTOMVERTEX,
-		D3DPOOL_DEFAULT, &m_pBackVB, NULL ) ) )
+	// 법선벡터 생성
+	D3DXVECTOR3 vec1 = vertices[1].position - vertices[0].position;
+	D3DXVECTOR3 vec2 = vertices[2].position - vertices[0].position;
+	D3DXVECTOR3 out;
+	D3DXVec3Cross(&out, &vec1, &vec2);
+	D3DXVec3Normalize(&out, &out);
+	for(int i = 0; i < 4; ++i)
 	{
-		return;
+		vertices[i].normal += out;
+		D3DXVec3Normalize(&vertices[i].normal, &vertices[i].normal);
 	}
 
-	// Fill the vertex buffer.
-	VOID* pVertices;
-	if( FAILED( m_pBackVB->Lock( 0, sizeof( g_Vertices ), ( void** )&pVertices, 0 ) ) )
+	if(FAILED(m_pD3DDevice->CreateVertexBuffer(sizeof(vertices), 0, D3DFVF_XYZ|D3DFVF_NORMAL, D3DPOOL_DEFAULT, &m_pBackVB, NULL)))
 		return;
-	memcpy( pVertices, g_Vertices, sizeof( g_Vertices ) );
+
+	VOID* pVertices;
+	if(FAILED(m_pBackVB->Lock(0, sizeof(vertices), (void**)&pVertices, 0)))
+		return;
+	memcpy(pVertices, vertices, sizeof(vertices));
 	m_pBackVB->Unlock();
+}
+
+void CDirectX3D::InitXYZVertex()
+{
+	// x,y,z vertex
+	CUSTOMVERTEXXYZ xyzVertics[] = { {D3DXVECTOR3(  0.f, 0.f, 0.f), D3DXCOLOR(0xffff0000)},
+									 {D3DXVECTOR3(300.f, 0.f, 0.f), D3DXCOLOR(0xffff0000)},
+									 {D3DXVECTOR3(0.f,   0.f, 0.f), D3DXCOLOR(0xff00ff00)},
+									 {D3DXVECTOR3(0.f, 300.f, 0.f), D3DXCOLOR(0xff00ff00)},
+									 {D3DXVECTOR3(0.f, 0.f,   0.f), D3DXCOLOR(0xff0000ff)},
+									 {D3DXVECTOR3(0.f, 0.f, 300.f), D3DXCOLOR(0xff0000ff)} };
+
+	if(FAILED(m_pD3DDevice->CreateVertexBuffer(sizeof(xyzVertics), 0, D3DFVF_XYZ|D3DFVF_DIFFUSE, D3DPOOL_DEFAULT, &m_pXYZVB, NULL)))
+		return;
+
+	VOID* pVertices;
+	if(FAILED(m_pXYZVB->Lock(0, sizeof(xyzVertics), (void**)&pVertices, 0)))
+		return;
+	memcpy(pVertices, xyzVertics, sizeof(xyzVertics));
+	m_pXYZVB->Unlock();
 }
 
 HRESULT CDirectX3D::InitObjects()
 {
 	m_pNodeMgr = new CNodeMgr(m_pD3DDevice);
 	m_pCamera  = new CCamera(m_pD3DDevice);
+	m_pSimul   = new CSimulate(m_pNodeMgr);
 
 	return S_OK;
 }
@@ -146,6 +175,9 @@ void CDirectX3D::Cleanup()
 {
 	if(m_pBackVB != NULL)
 		m_pBackVB->Release();
+
+	if(m_pXYZVB != NULL)
+		m_pXYZVB->Release();
 
 	if(m_pD3DDevice != NULL)
 		m_pD3DDevice->Release();
@@ -170,18 +202,38 @@ void CDirectX3D::Render()
 
 	Animate();
 
+	HDC hDC;
+	hDC = GetDC(m_hWnd);
+	SetBkColor(hDC, RGB(180,250,250));
+	TCHAR str[256] = {0,};
+
 	if(SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
-// 		// Render the vertex buffer contents
-// 		m_pD3DDevice->SetStreamSource( 0, m_pBackVB, 0, sizeof( CUSTOMVERTEX ) );
-// 		m_pD3DDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
-// 		m_pD3DDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 1 );
+		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+		// 문자열 출력
+		TextOut(hDC, 10, 10, L"Mouse Left Button Down + ↑↓←→ [카메라 이동]", 38);
+		swprintf(str, L"Θ : %.2lf, Φ : %.2lf, Radius : %.2lf", m_pCamera->GetTheta(), m_pCamera->GetPhi(), m_pCamera->GetRadius());
+		TextOut(hDC, 10, 30, str, wcslen(str));
+
+		m_pD3DDevice->SetStreamSource(0, m_pXYZVB, 0, sizeof(CUSTOMVERTEXXYZ));
+		m_pD3DDevice->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
+		m_pD3DDevice->DrawPrimitive(D3DPT_LINELIST, 0, 3);
+
+		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+		// Render the vertex buffer contents
+		m_pD3DDevice->SetStreamSource(0, m_pBackVB, 0, sizeof(CUSTOMVERTEXBACK));
+		m_pD3DDevice->SetFVF(D3DFVF_XYZ|D3DFVF_NORMAL);
+		m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
 		// mesh 그려주는 작업
 		m_pNodeMgr->Draw();
 
 		m_pD3DDevice->EndScene();
 	}
+
+	ReleaseDC(m_hWnd, hDC);
 
 	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }

@@ -12,10 +12,10 @@ MESHCOMPONENT g_meshComponent[22] =
 	{L"BODY.X", BODY, NOTHING, {1.f,0.f,0.f,0.f, 0.f,0.f,-1.f,0.f, 0.f,1.f,0.f,0.f, 0.f,50.f,0.f,1.f}},
 	{L"HEAD.X", HEAD, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,15.f,1.f}},								
 
-	{L"ARM_shoulder_L.X", ARM_SHOULDER_L, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -20.f,0.f,10.f,1.f}},
+	{L"ARM_shoulder_L.X", ARM_SHOULDER_L, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -18.f,0.f,10.f,1.f}},
 	{L"ARM_middle_L.X", ARM_MIDDLE_L, ARM_SHOULDER_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -3.f,0.f,-10.f,1.f}},
 	{L"ARM_low_L.X", ARM_LOW_L, ARM_MIDDLE_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -1.f,0.f,-10.f,1.f}},
-	{L"ARM_shoulder_R.X", ARM_SHOULDER_R, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 20.f,0.f,10.f,1.f}},
+	{L"ARM_shoulder_R.X", ARM_SHOULDER_R, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 18.f,0.f,10.f,1.f}},
 	{L"ARM_middle_R.X", ARM_MIDDLE_R, ARM_SHOULDER_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 3.f,0.f,-10.f,1.f}},
 	{L"ARM_low_R.X", ARM_LOW_R, ARM_MIDDLE_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,-14.f,1.f}},
 
@@ -119,18 +119,17 @@ void CNode::SetAngle(float angle)
 	case ARM_LOW_R:
 		if(m_angle < -0.3f)	m_angle = -0.3f;
 		if(m_angle >  0.3f)	m_angle =  0.3f;
-
-		if(m_angle < 0)	D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3( 1.f,  1.f,  1.f), m_angle);
-		else			D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3(-1.f, -1.f, -1.f), m_angle);
+		D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3( 1.f,  1.f,  1.f), m_angle);
 		break;
 	case ARM_MIDDLE_L: // аб©Л╥н
-	case ARM_MIDDLE_R: 
-		m_angle = -0.3f;
-		if(m_angle < -0.3f)	m_angle = -0.3f;
+		if(m_angle < -0.1f)	m_angle = -0.1f;
 		if(m_angle >  0.3f)	m_angle =  0.3f;
-
-		if(m_angle < 0)	D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3( 1.f,  1.f,  1.f), 0.3f);
-		else			D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3(-1.f, -1.f, -1.f), 0.3f);
+		D3DXMatrixRotationY(&m_matAni, m_angle);
+		break;
+	case ARM_MIDDLE_R: 
+		if(m_angle < -0.3f)	m_angle = -0.3f;
+		if(m_angle >  0.1f)	m_angle =  0.1f;
+		D3DXMatrixRotationY(&m_matAni, m_angle);
 		break;
 	case ARM_SHOULDER_L: // аб©Л╥н
 	case ARM_SHOULDER_R: 

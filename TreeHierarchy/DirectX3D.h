@@ -8,6 +8,7 @@
 
 #include "NodeMgr.h"
 #include "Camera.h"
+#include "Simulate.h"
 
 #define WINDOW_WIDTH		800
 #define WINDOW_HEIGHT		800
@@ -25,6 +26,7 @@ public:
 	void InitMatrix();
 	void InitLights();
 	void InitBackVertex();
+	void InitXYZVertex();
 	void DeleteObjects();
 	void Cleanup();
 
@@ -35,13 +37,16 @@ public:
 	CCamera* m_pCamera;
 
 private:
+	HWND m_hWnd;
 	LPDIRECT3D9 m_pD3D;
 	LPDIRECT3DDEVICE9 m_pD3DDevice;
 	LPDIRECT3DVERTEXBUFFER9 m_pBackVB;
+	LPDIRECT3DVERTEXBUFFER9 m_pXYZVB;
 
 	D3DXMATRIXA16 m_matWorld;
 	D3DXMATRIXA16 m_matView;
 	D3DXMATRIXA16 m_matProj;
 
 	CNodeMgr* m_pNodeMgr;
+	CSimulate* m_pSimul;
 };

@@ -191,6 +191,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Simulate.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TreeHierarchy.cpp"
 				>
 			</File>
@@ -218,6 +222,10 @@
 			</File>
 			<File
 				RelativePath=".\NodeMgr.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Simulate.h"
 				>
 			</File>
 		</Filter>

@@ -12,6 +12,12 @@ CMesh::CMesh(LPDIRECT3DDEVICE9 pD3DDevice, MESHCOMPONENT meshComponent)
 
 CMesh::~CMesh(void)
 {
+	if(m_pMaterials != NULL)
+		delete m_pMaterials;
+	if(m_pTextures != NULL)
+		delete m_pTextures;
+	if(m_pMesh != NULL)
+		delete m_pMesh;
 }
 
 void CMesh::LoadMesh(TCHAR* str)
@@ -34,7 +40,7 @@ void CMesh::LoadMesh(TCHAR* str)
 	m_pMaterials = new D3DMATERIAL9[m_dwNumMaterials];
 	m_pTextures = new LPDIRECT3DTEXTURE9[m_dwNumMaterials];
 
-	for(int i = 0; i < m_dwNumMaterials; ++i)
+	for(DWORD i = 0; i < m_dwNumMaterials; ++i)
 	{
 		m_pMaterials[i] = d3dxMaterials[i].MatD3D;
 
@@ -55,7 +61,7 @@ void CMesh::LoadMesh(TCHAR* str)
 
 void CMesh::Draw()
 {
-	for(int i = 0; i < m_dwNumMaterials; ++i)
+	for(DWORD i = 0; i < m_dwNumMaterials; ++i)
 	{
 		m_pD3DDevice->SetMaterial(&m_pMaterials[i]);
 		m_pD3DDevice->SetTexture(0, m_pTextures[i]);
