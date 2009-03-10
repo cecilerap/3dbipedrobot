@@ -25,7 +25,6 @@ public:
 	HRESULT InitObjects();
 	void InitMatrix();
 	void InitLights();
-	void InitBackVertex();
 	void InitXYZVertex();
 	void DeleteObjects();
 	void Cleanup();
@@ -40,7 +39,6 @@ private:
 	HWND m_hWnd;
 	LPDIRECT3D9 m_pD3D;
 	LPDIRECT3DDEVICE9 m_pD3DDevice;
-	LPDIRECT3DVERTEXBUFFER9 m_pBackVB;
 	LPDIRECT3DVERTEXBUFFER9 m_pXYZVB;
 
 	D3DXMATRIXA16 m_matWorld;

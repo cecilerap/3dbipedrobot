@@ -6,16 +6,14 @@
 
 MESHCOMPONENT g_meshComponent[22] = 
 {
-	{L"NULL", BACKGROUND, NOTHING, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
-
 	{L"NULL", NOTHING, NOTHING, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
-	{L"BODY.X", BODY, NOTHING, {1.f,0.f,0.f,0.f, 0.f,0.f,-1.f,0.f, 0.f,1.f,0.f,0.f, 0.f,50.f,0.f,1.f}},
+	{L"BODY.X", BODY, NOTHING, {1.f,0.f,0.f,0.f, 0.f,0.f,-1.f,0.f, 0.f,1.f,0.f,0.f, 0.f,74.f,0.f,1.f}},
 	{L"HEAD.X", HEAD, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,15.f,1.f}},								
 
-	{L"ARM_shoulder_L.X", ARM_SHOULDER_L, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -18.f,0.f,10.f,1.f}},
+	{L"ARM_shoulder_L.X", ARM_SHOULDER_L, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -19.f,0.f,0.f,1.f}},
 	{L"ARM_middle_L.X", ARM_MIDDLE_L, ARM_SHOULDER_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -3.f,0.f,-10.f,1.f}},
 	{L"ARM_low_L.X", ARM_LOW_L, ARM_MIDDLE_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -1.f,0.f,-10.f,1.f}},
-	{L"ARM_shoulder_R.X", ARM_SHOULDER_R, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 18.f,0.f,10.f,1.f}},
+	{L"ARM_shoulder_R.X", ARM_SHOULDER_R, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 20.f,0.f,0.f,1.f}},
 	{L"ARM_middle_R.X", ARM_MIDDLE_R, ARM_SHOULDER_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 3.f,0.f,-10.f,1.f}},
 	{L"ARM_low_R.X", ARM_LOW_R, ARM_MIDDLE_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,-14.f,1.f}},
 
@@ -34,6 +32,8 @@ MESHCOMPONENT g_meshComponent[22] =
 
 	{L"FOOT_motor_R.X", FOOT_MOTOR_R, LEG_LOW_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 2.f,0.f,-11.f,1.f}},
 	{L"FOOT_R.X", FOOT_R, FOOT_MOTOR_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,7.f,-6.f,1.f}},
+
+	{L"PLANE.X", ORIGIN, NOTHING, {2.f,0.f,0.f,0.f, 0.f,0.f,-2.f,0.f, 0.f,2.f,0.f,0.f, 0.f,0.f,0.f,1.f}}
 };
 
 CNode::CNode(LPDIRECT3DDEVICE9 pD3DDevice, MESHCOMPONENT meshComponent)
@@ -49,16 +49,8 @@ CNode::CNode(LPDIRECT3DDEVICE9 pD3DDevice, MESHCOMPONENT meshComponent)
 	D3DXMATRIXA16 matEmpty(data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7],data[8],
 						   data[9],data[10],data[11],data[12],data[13],data[14],data[15]);
 	memcpy(&m_matLocal, &matEmpty, sizeof(D3DXMATRIXA16));
+
 	D3DXMatrixIdentity(&m_matAni);
-
-// 	D3DXMatrixIdentity(&m_matLocal);
-// 
-// 	float data[16];
-// 	memcpy(data, meshComponent.matTM, sizeof(data));
-// 	D3DXMATRIXA16 matEmpty(data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7],data[8],
-// 						   data[9],data[10],data[11],data[12],data[13],data[14],data[15]);
-// 	memcpy(&m_matAni, &matEmpty, sizeof(D3DXMATRIXA16));
-
 	D3DXMatrixIdentity(&m_matTM);
 
 	m_angle = 0.0f;
@@ -89,9 +81,9 @@ void CNode::SetAngle(float angle)
 		break;
 	case FOOT_MOTOR_L: // ÁÂ¿ì·Î
 	case FOOT_MOTOR_R:
-// 		if(m_angle < -10.f)	m_angle = -10.f;
-// 		if(m_angle >  10.f)	m_angle =  10.f;
-// 		D3DXMatrixRotationY(&m_matAni, -10.f);
+		if(m_angle < -0.5f)	m_angle = -0.5f;
+		if(m_angle >  0.5f)	m_angle =  0.5f;
+ 		D3DXMatrixRotationZ(&m_matAni, m_angle);
 		break;
 	case LEG_LOW_L: // ¾ÕµÚ·Î (¹«¸­)
 	case LEG_LOW_R:
@@ -119,7 +111,7 @@ void CNode::SetAngle(float angle)
 	case ARM_LOW_R:
 		if(m_angle < -0.3f)	m_angle = -0.3f;
 		if(m_angle >  0.3f)	m_angle =  0.3f;
-		D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3( 1.f,  1.f,  1.f), m_angle);
+		D3DXMatrixRotationY(&m_matAni, m_angle);
 		break;
 	case ARM_MIDDLE_L: // ÁÂ¿ì·Î
 		if(m_angle < -0.1f)	m_angle = -0.1f;
@@ -133,29 +125,9 @@ void CNode::SetAngle(float angle)
 		break;
 	case ARM_SHOULDER_L: // ÁÂ¿ì·Î
 	case ARM_SHOULDER_R: 
-		{
-// 			if(m_angle < -0.3f)	m_angle = -0.3f;
-// 			if(m_angle >  0.3f)	m_angle =  0.3f;
-// 
-//	 		if(m_angle < 0)	D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3( 1.f,  1.f,  1.f), m_angle);
-//			else			D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3(-1.f, -1.f, -1.f), m_angle);
-
-//			D3DXMatrixRotationX(&m_matAni, angle);
-//			D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3(14.f, 0.f, 0.f), angle);
-//			D3DXMatrixRotationX(&m_matAni, angle);
-
-// 			D3DXVECTOR3 scale;
-// 			D3DXQUATERNION rotation;
-// 			D3DXVECTOR3 translation;
-// 			D3DXMatrixDecompose(&scale, &rotation, &translation, &m_matAni);
-// 
-// 			D3DXMatrixRotationAxis(&m_matAni, &D3DXVECTOR3(14.f, 0.f, 0.f), angle);
-// 
-// 			D3DXMatrixDecompose(&scale, &rotation, &translation, &m_matAni);
-// 
-// 			m_angle = 3.f;
-		}
-
+// 		if(m_angle < -0.3f)	m_angle = -0.3f;
+// 		if(m_angle >  0.3f)	m_angle =  0.3f;
+		D3DXMatrixRotationX(&m_matAni, m_angle);
 		break;
 	}
 }

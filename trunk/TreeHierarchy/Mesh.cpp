@@ -61,6 +61,16 @@ void CMesh::LoadMesh(TCHAR* str)
 
 void CMesh::Draw()
 {
+	if(m_nObjectID == ARM_SHOULDER_L || m_nObjectID == ARM_SHOULDER_R ||
+	   m_nObjectID == ARM_MIDDLE_L   || m_nObjectID == ARM_MIDDLE_R   || 
+	   m_nObjectID == ARM_LOW_L      || m_nObjectID == ARM_LOW_R        )
+	{
+		D3DXMATRIX temp;
+		D3DXMatrixIdentity(&temp);
+		D3DXMatrixTranslation(&temp, 0.f, 10.f, 0.f);
+		D3DXMatrixMultiply(&m_matTM, &m_matTM, &temp);		
+	}
+	
 	for(DWORD i = 0; i < m_dwNumMaterials; ++i)
 	{
 		m_pD3DDevice->SetMaterial(&m_pMaterials[i]);
