@@ -45,7 +45,6 @@ HRESULT CDirectX3D::InitGeometry()
 {
 	InitMatrix();
 	InitLights();
-	InitBackVertex();
 	InitXYZVertex();
 
 	return S_OK;
@@ -91,47 +90,11 @@ void CDirectX3D::InitLights()
 	m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, 0x00202020);
 }
 
-struct CUSTOMVERTEXBACK
-{
-	D3DXVECTOR3 position;
-	D3DXVECTOR3 normal;
-};
-
 struct CUSTOMVERTEXXYZ
 {
 	D3DXVECTOR3 position;
 	D3DXCOLOR color;
 };
-
-void CDirectX3D::InitBackVertex()
-{
-	// 평면 vertex
-	CUSTOMVERTEXBACK vertices[] = {	{D3DXVECTOR3(-150.f, 200.f,-4.f),D3DXVECTOR3(1.f,1.f,1.f)},
-									{D3DXVECTOR3( 150.f, 200.f,-4.f),D3DXVECTOR3(1.f,1.f,1.f)},
-									{D3DXVECTOR3(-150.f,-500.f,-4.f),D3DXVECTOR3(1.f,1.f,1.f)},
-									{D3DXVECTOR3( 150.f,-500.f,-4.f),D3DXVECTOR3(1.f,1.f,1.f)} };
-
-	// 법선벡터 생성
-	D3DXVECTOR3 vec1 = vertices[1].position - vertices[0].position;
-	D3DXVECTOR3 vec2 = vertices[2].position - vertices[0].position;
-	D3DXVECTOR3 out;
-	D3DXVec3Cross(&out, &vec1, &vec2);
-	D3DXVec3Normalize(&out, &out);
-	for(int i = 0; i < 4; ++i)
-	{
-		vertices[i].normal += out;
-		D3DXVec3Normalize(&vertices[i].normal, &vertices[i].normal);
-	}
-
-	if(FAILED(m_pD3DDevice->CreateVertexBuffer(sizeof(vertices), 0, D3DFVF_XYZ|D3DFVF_NORMAL, D3DPOOL_DEFAULT, &m_pBackVB, NULL)))
-		return;
-
-	VOID* pVertices;
-	if(FAILED(m_pBackVB->Lock(0, sizeof(vertices), (void**)&pVertices, 0)))
-		return;
-	memcpy(pVertices, vertices, sizeof(vertices));
-	m_pBackVB->Unlock();
-}
 
 void CDirectX3D::InitXYZVertex()
 {
@@ -173,9 +136,6 @@ void CDirectX3D::DeleteObjects()
 
 void CDirectX3D::Cleanup()
 {
-	if(m_pBackVB != NULL)
-		m_pBackVB->Release();
-
 	if(m_pXYZVB != NULL)
 		m_pXYZVB->Release();
 
@@ -221,11 +181,6 @@ void CDirectX3D::Render()
 		m_pD3DDevice->DrawPrimitive(D3DPT_LINELIST, 0, 3);
 
 		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-
-		// Render the vertex buffer contents
-		m_pD3DDevice->SetStreamSource(0, m_pBackVB, 0, sizeof(CUSTOMVERTEXBACK));
-		m_pD3DDevice->SetFVF(D3DFVF_XYZ|D3DFVF_NORMAL);
-		m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
 		// mesh 그려주는 작업
 		m_pNodeMgr->Draw();
