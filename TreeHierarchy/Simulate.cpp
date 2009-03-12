@@ -4,9 +4,10 @@
 
 #include "Simulate.h"
 
-CSimulate::CSimulate(CNodeMgr* pNodeMgr)
-: m_pNodeMgr(pNodeMgr)
+CSimulate::CSimulate()
 {
+	m_state = READY;
+
 	L = 80;
 
 	float temp[18] = {535, 475, 420, 465, 475, 483,
@@ -25,6 +26,31 @@ CSimulate::~CSimulate(void)
 }
 
 void CSimulate::Simulate()
+{
+	switch(m_state)
+	{
+	case READY:
+		Ready();
+		break;
+	case WALKING:
+		Walking();
+		break;
+	default:
+		break;
+	}
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// private ÇÔ¼ö
+//////////////////////////////////////////////////////////////////////////
+
+void CSimulate::Ready()
+{
+	initialize();
+}
+
+void CSimulate::Walking()
 {
 	initialize();
 
@@ -126,8 +152,8 @@ void CSimulate::sv_motor()
 	m_pNodeMgr->SetAngle(ARM_MIDDLE_R,   motor[16]);
 	m_pNodeMgr->SetAngle(ARM_SHOULDER_R, motor[17]);
 
-//	m_pNodeMgr->Animate();
-//	Sleep(5);
+	m_pDirectX3D->Render();
+	Sleep(5);
 }
 
 void CSimulate::initialize()
@@ -153,9 +179,9 @@ void CSimulate::initialize()
 	m_pNodeMgr->SetAngle(ARM_LOW_R,      buff_motor_value[15]);
 	m_pNodeMgr->SetAngle(ARM_MIDDLE_R,   buff_motor_value[16]);
 	m_pNodeMgr->SetAngle(ARM_SHOULDER_R, buff_motor_value[17]);
-	
-//	m_pNodeMgr->Animate();
-//	Sleep(50);
+
+	m_pDirectX3D->Render();
+	Sleep(5);
 }
 
 void CSimulate::sit(int Z)

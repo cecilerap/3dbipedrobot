@@ -8,7 +8,6 @@
 
 #include "NodeMgr.h"
 #include "Camera.h"
-#include "Simulate.h"
 
 #define WINDOW_WIDTH		800
 #define WINDOW_HEIGHT		800
@@ -29,8 +28,9 @@ public:
 	void DeleteObjects();
 	void Cleanup();
 
-	void Animate();
 	void Render();
+
+	CNodeMgr* GetNodeMgr() { return m_pNodeMgr; }
 
 public:
 	CCamera* m_pCamera;
@@ -46,5 +46,5 @@ private:
 	D3DXMATRIXA16 m_matProj;
 
 	CNodeMgr* m_pNodeMgr;
-	CSimulate* m_pSimul;
+	
 };

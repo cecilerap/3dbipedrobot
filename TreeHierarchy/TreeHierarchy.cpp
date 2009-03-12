@@ -9,8 +9,10 @@
 #pragma comment(lib, "d3dx9.lib")
 
 #include "DirectX3D.h"
+#include "Simulate.h"
 
 CDirectX3D g_DirectX3D;
+CSimulate  g_Simul;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
@@ -49,6 +51,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		g_DirectX3D.m_pCamera->Zoom((int)wParam);
 		break;
 
+	case WM_CHAR:
+		switch((TCHAR)wParam)
+		{
+		case 'W' :
+		case 'w' : g_Simul.SetState(CSimulate::WALKING);
+			break;
+
+		case 'R' :
+		case 'r' : g_Simul.SetState(CSimulate::READY);
+			break;
+		}
+		break;
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
@@ -74,6 +89,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		{
 			if(SUCCEEDED(g_DirectX3D.InitGeometry()))
 			{
+				g_Simul.SetDirectX3D(&g_DirectX3D);
+				g_Simul.SetNodeMgr(g_DirectX3D.GetNodeMgr());
+
 				UpdateWindow(hWnd);
 				while(msg.message != WM_QUIT)
 				{
@@ -83,7 +101,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 						DispatchMessage(&msg);
 					}
 					else
-						g_DirectX3D.Render();
+						g_Simul.Simulate();
+//						g_DirectX3D.Render();
 				}
 			}
 		}
