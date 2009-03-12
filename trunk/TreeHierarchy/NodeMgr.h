@@ -18,6 +18,8 @@ public:
 	void Animate();
 	void Draw();
 
+	void SetAngle(COMPONENT id, float angle);
+
 protected:
 	vector<CNode*> m_nodes;
 

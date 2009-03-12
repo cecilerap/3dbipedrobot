@@ -32,7 +32,7 @@ public:
 	D3DXMATRIXA16* Animate(D3DXMATRIXA16* pParentTM);
 	virtual void Draw() {}
 
-	void SetAngle(float angle);
+	void SetAngle(D3DXMATRIX* (__stdcall *pfunc)(D3DXMATRIX*, FLOAT), float angle);
 
 protected:
 	COMPONENT m_nObjectID;
