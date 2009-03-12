@@ -149,6 +149,7 @@ void CDirectX3D::Cleanup()
 void CDirectX3D::Animate()
 {
 	// 행렬 변환 작업 (이동이라든지 등등)
+	m_pSimul->Simulate();
 	m_pNodeMgr->Animate();
 }
 
