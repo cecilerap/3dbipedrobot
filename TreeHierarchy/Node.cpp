@@ -7,7 +7,7 @@
 MESHCOMPONENT g_meshComponent[22] = 
 {
 	{L"NULL", NOTHING, NOTHING, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
-	{L"BODY.X", BODY, NOTHING, {1.f,0.f,0.f,0.f, 0.f,0.f,-1.f,0.f, 0.f,1.f,0.f,0.f, 0.f,74.f,0.f,1.f}},
+	{L"BODY.X", BODY, NOTHING, {1.f,0.f,0.f,0.f, 0.f,0.f,-1.f,0.f, 0.f,1.f,0.f,0.f, 0.f,72.f,0.f,1.f}},
 	{L"HEAD.X", HEAD, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,15.f,1.f}},								
 
 	{L"ARM_shoulder_L.X", ARM_SHOULDER_L, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -19.f,0.f,0.f,1.f}},
@@ -69,69 +69,4 @@ D3DXMATRIXA16* CNode::Animate(D3DXMATRIXA16* pParentTM)
 void CNode::SetAngle(D3DXMATRIX* (__stdcall *pfunc)(D3DXMATRIX*, FLOAT), float angle)
 {
 	pfunc(&m_matAni, angle);
-// 	m_angle += angle;
-// 	m_angle = 0.f;
-// 
-// 	// 300/1024 = 0.29
-// 	m_angle = 0.29 * angle;
-// 
-// 	switch(m_nObjectID)
-// 	{
-// 	case FOOT_L:
-// 	case FOOT_R: // À§¾Æ·¡·Î¸¸ ±îµü±îµü
-// 		if(m_angle < -0.5f)	m_angle = -0.5f;
-// 		if(m_angle >  0.5f)	m_angle =  0.5f;
-// 		D3DXMatrixRotationX(&m_matAni, m_angle);
-// 		break;
-// 	case FOOT_MOTOR_L: // ÁÂ¿ì·Î
-// 	case FOOT_MOTOR_R:
-// 		if(m_angle < -0.5f)	m_angle = -0.5f;
-// 		if(m_angle >  0.5f)	m_angle =  0.5f;
-//  		D3DXMatrixRotationZ(&m_matAni, m_angle);
-// 		break;
-// 	case LEG_LOW_L: // ¾ÕµÚ·Î (¹«¸­)
-// 	case LEG_LOW_R:
-// 		if(m_angle <   0.f)	m_angle =   0.f;
-// 		if(m_angle >   2.f)	m_angle =   2.f;
-// 		D3DXMatrixRotationX(&m_matAni, m_angle);
-// 		break;
-// 	case LEG_MIDDLE_L: // ¾ÕµÚ·Î
-// 	case LEG_MIDDLE_R:
-// 		if(m_angle <  -1.f)	m_angle =  -1.f;
-// 		if(m_angle >   0.f)	m_angle =   0.f;
-// 		D3DXMatrixRotationX(&m_matAni, m_angle);
-// 		break;
-// 	case LEG_UPMOTOR_L: // ÁÂ¿ì·Î
-// 		if(m_angle <-0.05f)	m_angle =-0.05f;
-// 		if(m_angle >   1.f)	m_angle =   1.f;
-// 		D3DXMatrixRotationY(&m_matAni, m_angle);
-// 		break;
-// 	case LEG_UPMOTOR_R:
-// 		if(m_angle <  -1.f)	m_angle =  -1.f;
-// 		if(m_angle > 0.05f)	m_angle = 0.05f;
-// 		D3DXMatrixRotationY(&m_matAni, m_angle);
-// 		break;
-// 	case ARM_LOW_L: // ÁÂ¿ì·Î
-// 	case ARM_LOW_R:
-// 		if(m_angle < -0.3f)	m_angle = -0.3f;
-// 		if(m_angle >  0.3f)	m_angle =  0.3f;
-// 		D3DXMatrixRotationY(&m_matAni, m_angle);
-// 		break;
-// 	case ARM_MIDDLE_L: // ÁÂ¿ì·Î
-// 		if(m_angle < -0.1f)	m_angle = -0.1f;
-// 		if(m_angle >  0.3f)	m_angle =  0.3f;
-// 		D3DXMatrixRotationY(&m_matAni, m_angle);
-// 		break;
-// 	case ARM_MIDDLE_R: 
-// 		if(m_angle < -0.3f)	m_angle = -0.3f;
-// 		if(m_angle >  0.1f)	m_angle =  0.1f;
-// 		D3DXMatrixRotationY(&m_matAni, m_angle);
-// 		break;
-// 	case ARM_SHOULDER_L: // ÁÂ¿ì·Î
-// 	case ARM_SHOULDER_R: 
-// 		if(m_angle < -0.3f)	m_angle = -0.3f;
-// 		if(m_angle >  0.3f)	m_angle =  0.3f;
-// 		D3DXMatrixRotationX(&m_matAni, m_angle);
-// 		break;
-// 	}
 }

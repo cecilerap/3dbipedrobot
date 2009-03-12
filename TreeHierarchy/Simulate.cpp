@@ -125,60 +125,62 @@ void CSimulate::Walking()
 // 
 // 		}
 // 
-// 	}			
+// 	}
+
+	m_state = READY;
 }
 
 void CSimulate::sv_motor()
 {
-	m_pNodeMgr->SetAngle(FOOT_L,        motor[0]);
-	m_pNodeMgr->SetAngle(FOOT_MOTOR_L,  motor[1]);
+	m_pNodeMgr->SetAngle(FOOT_MOTOR_L,  motor[0]);
+	m_pNodeMgr->SetAngle(FOOT_L,        motor[1]);
 	m_pNodeMgr->SetAngle(LEG_LOW_L,     motor[2]);
 	m_pNodeMgr->SetAngle(LEG_MIDDLE_L,  motor[3]);
 	m_pNodeMgr->SetAngle(LEG_UPMOTOR_L, motor[4]);
 	m_pNodeMgr->SetAngle(LEG_UP_L,      motor[5]);
 
-	m_pNodeMgr->SetAngle(FOOT_R,        motor[6]);
-	m_pNodeMgr->SetAngle(FOOT_MOTOR_R,  motor[7]);
+	m_pNodeMgr->SetAngle(FOOT_MOTOR_R,  motor[6]);
+	m_pNodeMgr->SetAngle(FOOT_R,        motor[7]);
 	m_pNodeMgr->SetAngle(LEG_LOW_R,     motor[8]);
 	m_pNodeMgr->SetAngle(LEG_MIDDLE_R,  motor[9]);
 	m_pNodeMgr->SetAngle(LEG_UPMOTOR_R, motor[10]);
 	m_pNodeMgr->SetAngle(LEG_UP_R,      motor[11]);
 
-	m_pNodeMgr->SetAngle(ARM_LOW_L,      motor[12]);
+	m_pNodeMgr->SetAngle(ARM_SHOULDER_L, motor[12]);
 	m_pNodeMgr->SetAngle(ARM_MIDDLE_L,   motor[13]);
-	m_pNodeMgr->SetAngle(ARM_SHOULDER_L, motor[14]);
+	m_pNodeMgr->SetAngle(ARM_LOW_L,      motor[14]);
 
-	m_pNodeMgr->SetAngle(ARM_LOW_R,      motor[15]);
+	m_pNodeMgr->SetAngle(ARM_SHOULDER_R, motor[15]);
 	m_pNodeMgr->SetAngle(ARM_MIDDLE_R,   motor[16]);
-	m_pNodeMgr->SetAngle(ARM_SHOULDER_R, motor[17]);
+	m_pNodeMgr->SetAngle(ARM_LOW_R,      motor[17]);
 
 	m_pDirectX3D->Render();
-	Sleep(5);
+	Sleep(50);
 }
 
 void CSimulate::initialize()
 {
-	m_pNodeMgr->SetAngle(FOOT_L,        buff_motor_value[0]);
-	m_pNodeMgr->SetAngle(FOOT_MOTOR_L,  buff_motor_value[1]);
+	m_pNodeMgr->SetAngle(FOOT_MOTOR_L,  buff_motor_value[0]);
+	m_pNodeMgr->SetAngle(FOOT_L,        buff_motor_value[1]);
 	m_pNodeMgr->SetAngle(LEG_LOW_L,     buff_motor_value[2]);
 	m_pNodeMgr->SetAngle(LEG_MIDDLE_L,  buff_motor_value[3]);
 	m_pNodeMgr->SetAngle(LEG_UPMOTOR_L, buff_motor_value[4]);
 	m_pNodeMgr->SetAngle(LEG_UP_L,      buff_motor_value[5]);
 
-	m_pNodeMgr->SetAngle(FOOT_R,        buff_motor_value[6]);
-	m_pNodeMgr->SetAngle(FOOT_MOTOR_R,  buff_motor_value[7]);
+	m_pNodeMgr->SetAngle(FOOT_MOTOR_R,  buff_motor_value[6]);
+	m_pNodeMgr->SetAngle(FOOT_R,        buff_motor_value[7]);
 	m_pNodeMgr->SetAngle(LEG_LOW_R,     buff_motor_value[8]);
 	m_pNodeMgr->SetAngle(LEG_MIDDLE_R,  buff_motor_value[9]);
 	m_pNodeMgr->SetAngle(LEG_UPMOTOR_R, buff_motor_value[10]);
 	m_pNodeMgr->SetAngle(LEG_UP_R,      buff_motor_value[11]);
 
-	m_pNodeMgr->SetAngle(ARM_LOW_L,      buff_motor_value[12]);
+	m_pNodeMgr->SetAngle(ARM_SHOULDER_L, buff_motor_value[12]);
 	m_pNodeMgr->SetAngle(ARM_MIDDLE_L,   buff_motor_value[13]);
-	m_pNodeMgr->SetAngle(ARM_SHOULDER_L, buff_motor_value[14]);
+	m_pNodeMgr->SetAngle(ARM_LOW_L,      buff_motor_value[14]);
 
-	m_pNodeMgr->SetAngle(ARM_LOW_R,      buff_motor_value[15]);
+	m_pNodeMgr->SetAngle(ARM_SHOULDER_R, buff_motor_value[15]);
 	m_pNodeMgr->SetAngle(ARM_MIDDLE_R,   buff_motor_value[16]);
-	m_pNodeMgr->SetAngle(ARM_SHOULDER_R, buff_motor_value[17]);
+	m_pNodeMgr->SetAngle(ARM_LOW_R,      buff_motor_value[17]);
 
 	m_pDirectX3D->Render();
 	Sleep(5);

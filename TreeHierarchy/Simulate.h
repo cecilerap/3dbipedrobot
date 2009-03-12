@@ -29,7 +29,7 @@ private:
 	void sit(int Z);
 
 private:
-	CNodeMgr* m_pNodeMgr;
+	CNodeMgr*   m_pNodeMgr;
 	CDirectX3D* m_pDirectX3D;
 
 	STATE m_state;
