@@ -47,7 +47,7 @@ void CNodeMgr::Draw()
 
 void CNodeMgr::SetAngle(COMPONENT id, float angle)
 {
-//	angle *= 0.29f;		// 300/1024*angle 모터가 움직일 각도(?)
+	float m_angle = timeGetTime()/2000.f;
 
 	switch(id)
 	{
@@ -90,33 +90,33 @@ void CNodeMgr::SetAngle(COMPONENT id, float angle)
 		m_nodes[id]->SetAngle(D3DXMatrixRotationX, angle);
 		break;
 	case LEG_LOW_R:
-//		angle -= (194.3f - 0.8f);
+// 		angle -= (194.3f - 0.8f);
 // 		if(angle <   0.f)	angle =   0.f;
 // 		if(angle >   2.f)	angle =   2.f;
 		m_nodes[id]->SetAngle(D3DXMatrixRotationX, angle);
 		break;
 
 	case LEG_MIDDLE_L: // 앞뒤로
-//		angle -= (134.85f + 0.6f);
+// 		angle -= (134.85f + 0.6f);
 // 		if(angle <  -1.f)	angle =  -1.f;
 // 		if(angle >   0.f)	angle =   0.f;
 		m_nodes[id]->SetAngle(D3DXMatrixRotationX, angle);
 		break;
 	case LEG_MIDDLE_R:
-//		angle -= (160.95f + 0.6f);
+// 		angle -= (160.95f + 0.6f);
 // 		if(angle <  -1.f)	angle =  -1.f;
 // 		if(angle >   0.f)	angle =   0.f;
 		m_nodes[id]->SetAngle(D3DXMatrixRotationX, angle);
 		break;
 
 	case LEG_UPMOTOR_L: // 좌우로
-//		angle -= 137.75f;
+// 		angle -= 137.75f;
 // 		if(angle <-0.05f)	angle =-0.05f;
 // 		if(angle >   1.f)	angle =   1.f;
 		m_nodes[id]->SetAngle(D3DXMatrixRotationY, angle);
 		break;
 	case LEG_UPMOTOR_R:
-//		angle -= 156.6f;
+// 		angle -= 156.6f;
 // 		if(angle <  -1.f)	angle =  -1.f;
 // 		if(angle > 0.05f)	angle = 0.05f;
 		m_nodes[id]->SetAngle(D3DXMatrixRotationY, angle);
@@ -127,26 +127,26 @@ void CNodeMgr::SetAngle(COMPONENT id, float angle)
 	//////////////////////////////////////////////////////////////////////////
 	// ARM
 	case ARM_LOW_L: // 좌우로
-//		angle -= 150.51f;
+// 		angle -= 150.51f;
 // 		if(angle < -0.3f)	angle = -0.3f;
 // 		if(angle >  0.3f)	angle =  0.3f;
 		m_nodes[id]->SetAngle(D3DXMatrixRotationY, angle);
 		break;
 	case ARM_LOW_R:
-//		angle -= 149.06f;
+// 		angle -= 149.06f;
 // 		if(angle < -0.3f)	angle = -0.3f;
 // 		if(angle >  0.3f)	angle =  0.3f;
 		m_nodes[id]->SetAngle(D3DXMatrixRotationY, angle);
 		break;
 
 	case ARM_MIDDLE_L: // 좌우로
-//		angle -= 149.06f;
+// 		angle -= 149.06f;
 // 		if(angle < -0.1f)	angle = -0.1f;
 // 		if(angle >  0.3f)	angle =  0.3f;
 		m_nodes[id]->SetAngle(D3DXMatrixRotationY, angle);
 		break;
 	case ARM_MIDDLE_R: 
-//		angle -= 150.51f;
+// 		angle -= 150.51f;
 // 		if(angle < -0.3f)	angle = -0.3f;
 // 		if(angle >  0.1f)	angle =  0.1f;
 		m_nodes[id]->SetAngle(D3DXMatrixRotationY, angle);
