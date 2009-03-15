@@ -20,7 +20,7 @@ MESHCOMPONENT g_meshComponent[22] =
 	{L"LEG_up_L.X", LEG_UP_L, BODY, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -9.f,3.f,-20.f,1.f}},
 	{L"LEG_upMotor_L.X", LEG_UPMOTOR_L, LEG_UP_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,-3.f,-5.f,1.f}},
 	{L"LEG_middle_L.X", LEG_MIDDLE_L, LEG_UPMOTOR_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 2.f,0.f,-7.f,1.f}},
-	{L"LEG_low_L.X", LEG_LOW_L, LEG_MIDDLE_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,-21.f,1.f}},
+	{L"LEG_low_L.X", LEG_LOW_L, LEG_MIDDLE_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,-5.f,-21.f,1.f}},
 
 	{L"FOOT_motor_L.X", FOOT_MOTOR_L, LEG_LOW_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -2.f,0.f,-11.f,1.f}},
 	{L"FOOT_L.X", FOOT_L, FOOT_MOTOR_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,7.f,-6.f,1.f}},

@@ -8,13 +8,14 @@ CSimulate::CSimulate()
 {
 	m_state = READY;
 
-	L = 80;
+	L = 80.f;
 
-	float temp[18] = {535, 475, 420, 465, 475, 483,
-					  475, 620, 670, 555, 540, 480,
-					  478, 514, 519,
-					  545, 519, 514};
-	memcpy(buff_motor_value, temp, sizeof(temp));
+// 	float temp[18] = {535, 475, 420, 465, 475, 483,
+// 					  475, 620, 670, 555, 540, 480,
+// 					  478, 514, 519,
+// 					  545, 519, 514};
+	memset(buff_motor_value, 0, sizeof(buff_motor_value));
+//	memcpy(buff_motor_value, temp, sizeof(temp));
 
 	memset(buff_motor_value1, 0, sizeof(buff_motor_value1));
 
@@ -78,7 +79,7 @@ void CSimulate::Walking()
 // 			}
 // 			if(flag)
 // 			{
- 				sit(1);
+ 				sit(10.f);
 // 				center();
 // 				flag = 0;
 // 				flag1 = 1;
@@ -186,24 +187,25 @@ void CSimulate::initialize()
 	Sleep(5);
 }
 
-void CSimulate::sit(int Z)
+void CSimulate::sit(float Z)
 {
 	float result;
 	result = acos((float)(((2*L)-Z)/(2*L)));
-	result = (result * 180) / 3.14 ; 
-	result *= 3.41;
+//	result = cos((float)30);
+//	result = (result * 180) / 3.14; 
+//	result *= 3.41;
 
 	buff_motor_value1[0] = buff_motor_value[0]; 
 	buff_motor_value1[1] = buff_motor_value[1] - result;
-	buff_motor_value1[2] = buff_motor_value[2] - (2 * result);
-	buff_motor_value1[3] = buff_motor_value[3] - result;
+	buff_motor_value1[2] = buff_motor_value[2] + (result*2);
+	buff_motor_value1[3] = buff_motor_value[3] -result;
 	buff_motor_value1[4] = buff_motor_value[4];
 	buff_motor_value1[5] = buff_motor_value[5];
 
 	buff_motor_value1[6] = buff_motor_value[6];
-	buff_motor_value1[7] = buff_motor_value[7] + result;
-	buff_motor_value1[8] = buff_motor_value[8] + (2*result);
-	buff_motor_value1[9] = buff_motor_value[9] + result;
+	buff_motor_value1[7] = buff_motor_value[7] ;
+	buff_motor_value1[8] = buff_motor_value[8] ;
+	buff_motor_value1[9] = buff_motor_value[9] ;
 	buff_motor_value1[10] = buff_motor_value[10];
 	buff_motor_value1[11] = buff_motor_value[11];
 
@@ -215,21 +217,27 @@ void CSimulate::sit(int Z)
 	buff_motor_value1[16] = buff_motor_value[16];
 	buff_motor_value1[17] = buff_motor_value[17];
 
-	for(int i = 0; i <= (TABLE-1); i++)						// 테이블 증가
+// 	for(int i = 0; i <= (TABLE-1); i++)						// 테이블 증가
+// 	{
+// 		for(int j = 0; j < 18; j++)							// 테이블내의 테이터 증가
+// 		{
+// 			// 내분점공식
+// 			motor_value[j][i] = (i * buff_motor_value1[j] + ((TABLE-1) - i) * buff_motor_value[j]) / (TABLE-1);
+// 		}
+// 	}
+
+	for(int i = 0; i < 18; ++i)
 	{
-		for(int j = 0; j < 18; j++)							// 테이블내의 테이터 증가
-		{
-			// 내분점공식
-			motor_value[j][i] = (i * buff_motor_value1[j] + ((TABLE-1) - i) * buff_motor_value[j]) / (TABLE-1);
-		}
+		motor[i]  = buff_motor_value[i] = buff_motor_value1[i];
+		sv_motor();
 	}
 
-	for(int k = 0; k < TABLE; k++)
-	{
-		for(int l = 0; l < 18; l++)
-		{ 
-			motor[l] = motor_value[l][k];
-		}
-		sv_motor();
-	}	
+// 	for(int k = 0; k < TABLE; k++)
+// 	{
+// 		for(int l = 0; l < 18; l++)
+// 		{ 
+// 			motor[l] = motor_value[l][k];
+// 		}
+// 		sv_motor();
+// 	}	
 }

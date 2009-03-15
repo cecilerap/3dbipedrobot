@@ -26,7 +26,7 @@ private:
 
 	void sv_motor();
 	void initialize();
-	void sit(int Z);
+	void sit(float Z);
 
 private:
 	CNodeMgr*   m_pNodeMgr;
@@ -34,7 +34,7 @@ private:
 
 	STATE m_state;
 
-	int L;
+	float L;
 	float buff_motor_value[18];
 	float buff_motor_value1[18];
 	int rxd[4];
