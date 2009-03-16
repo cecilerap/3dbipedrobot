@@ -10,12 +10,6 @@ CSimulate::CSimulate()
 
 	L = 80.f;
 
-// 	float temp[18] = {motor_vlaue0, motor_vlaue1, motor_vlaue2, motor_vlaue3, motor_vlaue4,  motor_vlaue5,
-// 					  motor_vlaue6, motor_vlaue7, motor_vlaue8, motor_vlaue9, motor_vlaue10, motor_vlaue11,
-// 					  motor_vlaue12, motor_vlaue13, motor_vlaue14,
-// 					  motor_vlaue15, motor_vlaue16, motor_vlaue17};
-// 	memcpy(buff_motor_value, temp, sizeof(temp));
-
 	memset(buff_motor_value, 0, sizeof(buff_motor_value));
 	memset(buff_motor_value1, 0, sizeof(buff_motor_value1));
 
@@ -53,6 +47,33 @@ void CSimulate::Ready()
 
 void CSimulate::Walking()
 {
+// 	int count = 0;
+// 	while(count++ < 3)
+// 	{
+		L_shift(10.f);
+		R_foot_up(30, 12);
+ 
+		move_R(10.f);
+		move_center(-30.f,0);
+
+		R_shift(10.f);
+		L_foot_center(0,12);
+		
+		L_foot_up(30/2,12);
+
+		move_L(10.f);
+		move_center_(-30,0);
+
+
+		L_shift_(10.f);
+		R_foot_center(0,12);
+
+		R_foot_up_(30/2,12);
+
+		move_R(10.f);
+		move_center(-30,0);
+// 	}
+
 // 	if(rxd[0] == 0)
 // 	{
 // 		rxd[1] = 0;
@@ -74,19 +95,19 @@ void CSimulate::Walking()
 // 		}
 // 		if(flag)
 // 		{
-			sit(10.f);
+//			sit(30.f);
 // 			//				center();
 // 			flag = 0;
 // 			flag1 = 1;
 // 		}
 // 		else if(flag1)
 // 		{
- 			L_shift(10.f);
- 			R_foot_up(30, 12);
+// 			L_shift(10.f);
+// 			R_foot_up(30, 12);
 // 			//				center();
 // 
-// 			move_R(shift);
-// 			move_center(-rxd[1],0);
+// 			move_R(10.f);
+// 			move_center(-30.f,0);
 // 			//				center();
 // 			flag1 = 0;
 // 			flag2 = 1;
@@ -123,6 +144,37 @@ void CSimulate::Walking()
 	m_state = READY;
 }
 
+void CSimulate::initialize()
+{
+	memset(buff_motor_value, 0, sizeof(buff_motor_value));
+	memset(buff_motor_value1, 0, sizeof(buff_motor_value1));
+
+	m_pNodeMgr->SetAngle(FOOT_MOTOR_L,  buff_motor_value[0]);
+	m_pNodeMgr->SetAngle(FOOT_L,        buff_motor_value[1]);
+	m_pNodeMgr->SetAngle(LEG_LOW_L,     buff_motor_value[2]);
+	m_pNodeMgr->SetAngle(LEG_MIDDLE_L,  buff_motor_value[3]);
+	m_pNodeMgr->SetAngle(LEG_UPMOTOR_L, buff_motor_value[4]);
+	m_pNodeMgr->SetAngle(LEG_UP_L,      buff_motor_value[5]);
+
+	m_pNodeMgr->SetAngle(FOOT_MOTOR_R,  buff_motor_value[6]);
+	m_pNodeMgr->SetAngle(FOOT_R,        buff_motor_value[7]);
+	m_pNodeMgr->SetAngle(LEG_LOW_R,     buff_motor_value[8]);
+	m_pNodeMgr->SetAngle(LEG_MIDDLE_R,  buff_motor_value[9]);
+	m_pNodeMgr->SetAngle(LEG_UPMOTOR_R, buff_motor_value[10]);
+	m_pNodeMgr->SetAngle(LEG_UP_R,      buff_motor_value[11]);
+
+	m_pNodeMgr->SetAngle(ARM_SHOULDER_L, buff_motor_value[12]);
+	m_pNodeMgr->SetAngle(ARM_MIDDLE_L,   buff_motor_value[13]);
+	m_pNodeMgr->SetAngle(ARM_LOW_L,      buff_motor_value[14]);
+
+	m_pNodeMgr->SetAngle(ARM_SHOULDER_R, buff_motor_value[15]);
+	m_pNodeMgr->SetAngle(ARM_MIDDLE_R,   buff_motor_value[16]);
+	m_pNodeMgr->SetAngle(ARM_LOW_R,      buff_motor_value[17]);
+
+	m_pDirectX3D->Render();
+	Sleep(50);
+}
+
 void CSimulate::sv_motor()
 {
 	m_pNodeMgr->SetAngle(FOOT_MOTOR_L,  motor[0]);
@@ -149,34 +201,6 @@ void CSimulate::sv_motor()
 
 	m_pDirectX3D->Render();
 	Sleep(50);
-}
-
-void CSimulate::initialize()
-{
-	m_pNodeMgr->SetAngle(FOOT_MOTOR_L,  buff_motor_value[0]);
-	m_pNodeMgr->SetAngle(FOOT_L,        buff_motor_value[1]);
-	m_pNodeMgr->SetAngle(LEG_LOW_L,     buff_motor_value[2]);
-	m_pNodeMgr->SetAngle(LEG_MIDDLE_L,  buff_motor_value[3]);
-	m_pNodeMgr->SetAngle(LEG_UPMOTOR_L, buff_motor_value[4]);
-	m_pNodeMgr->SetAngle(LEG_UP_L,      buff_motor_value[5]);
-
-	m_pNodeMgr->SetAngle(FOOT_MOTOR_R,  buff_motor_value[6]);
-	m_pNodeMgr->SetAngle(FOOT_R,        buff_motor_value[7]);
-	m_pNodeMgr->SetAngle(LEG_LOW_R,     buff_motor_value[8]);
-	m_pNodeMgr->SetAngle(LEG_MIDDLE_R,  buff_motor_value[9]);
-	m_pNodeMgr->SetAngle(LEG_UPMOTOR_R, buff_motor_value[10]);
-	m_pNodeMgr->SetAngle(LEG_UP_R,      buff_motor_value[11]);
-
-	m_pNodeMgr->SetAngle(ARM_SHOULDER_L, buff_motor_value[12]);
-	m_pNodeMgr->SetAngle(ARM_MIDDLE_L,   buff_motor_value[13]);
-	m_pNodeMgr->SetAngle(ARM_LOW_L,      buff_motor_value[14]);
-
-	m_pNodeMgr->SetAngle(ARM_SHOULDER_R, buff_motor_value[15]);
-	m_pNodeMgr->SetAngle(ARM_MIDDLE_R,   buff_motor_value[16]);
-	m_pNodeMgr->SetAngle(ARM_LOW_R,      buff_motor_value[17]);
-
-	m_pDirectX3D->Render();
-	Sleep(5);
 }
 
 void CSimulate::sit(float Z)
@@ -381,16 +405,16 @@ void CSimulate::move_center(float X_R, float Z_R)
 	float result_the_c = the_1 - the_0;
 
 	buff_motor_value[0] = buff_motor_value1[0] + R_shift_result+1; 
-	buff_motor_value[1] = motor_value1 - result_the_c;
-	buff_motor_value[2] = motor_value2 - result_the_b;
-	buff_motor_value[3] = motor_value3 - result_the_a;
+	buff_motor_value[1] = result_the_c;
+	buff_motor_value[2] = result_the_b;
+	buff_motor_value[3] = result_the_a;
 	buff_motor_value[4] = buff_motor_value1[4];
 	buff_motor_value[5] = buff_motor_value1[5];
 
 	buff_motor_value[6] = buff_motor_value1[6] + R_shift_result; 
-	buff_motor_value[7] = motor_value7 + sit_result;
-	buff_motor_value[8] = motor_value8 + (2*sit_result);
-	buff_motor_value[9] = motor_value9 + sit_result;
+	buff_motor_value[7] = sit_result;
+	buff_motor_value[8] = (2*sit_result);
+	buff_motor_value[9] = sit_result;
 	buff_motor_value[10] = buff_motor_value1[10] + R_shift_result;
 	buff_motor_value[11] = buff_motor_value1[11];
 
@@ -476,9 +500,9 @@ void CSimulate::L_foot_center(float X_M, float Z_M)
 	float result_the_c = the_1 - the_0;
 
 	buff_motor_value[0] = buff_motor_value1[0]; 
-	buff_motor_value[1] = motor_value1 - result_the_c;
-	buff_motor_value[2] = motor_value2 - result_the_b;
-	buff_motor_value[3] = motor_value3 - result_the_a;
+	buff_motor_value[1] = result_the_c;
+	buff_motor_value[2] = result_the_b;
+	buff_motor_value[3] = result_the_a;
 	buff_motor_value[4] = buff_motor_value1[4];
 	buff_motor_value[5] = buff_motor_value1[5];
 
@@ -527,9 +551,9 @@ void CSimulate::L_foot_up(float X_M, float Z_M)
 	float result_the_c = the_1 - the_0;
 
 	buff_motor_value1[0] = buff_motor_value[0]; 
-	buff_motor_value1[1] = motor_value1 - result_the_c;
-	buff_motor_value1[2] = motor_value2 - result_the_b;
-	buff_motor_value1[3] = motor_value3 - result_the_a;
+	buff_motor_value1[1] = result_the_c;
+	buff_motor_value1[2] = result_the_b;
+	buff_motor_value1[3] = result_the_a;
 	buff_motor_value1[4] = buff_motor_value[4];
 	buff_motor_value1[5] = buff_motor_value[5];
 
@@ -578,9 +602,9 @@ void CSimulate::L_foot_down(float X_B, float Z_B)
 	float result_the_c = the_1 - the_0;
 
 	buff_motor_value[0] = buff_motor_value1[0]; 
-	buff_motor_value[1] = motor_value1 - result_the_c;
-	buff_motor_value[2] = motor_value2 - result_the_b;
-	buff_motor_value[3] = motor_value3 - result_the_a;
+	buff_motor_value[1] = result_the_c;
+	buff_motor_value[2] = result_the_b;
+	buff_motor_value[3] = result_the_a;
 	buff_motor_value[4] = buff_motor_value1[4];
 	buff_motor_value[5] = buff_motor_value1[5];
 
@@ -673,16 +697,16 @@ void CSimulate::move_center_(float X_R, float Z_R)
 	float result_the_c = the_1 - the_0;
 
 	buff_motor_value[0] = buff_motor_value1[0] - R_shift_result; 
-	buff_motor_value[1] = motor_value1 - sit_result;
-	buff_motor_value[2] = motor_value2 - (2*sit_result);
-	buff_motor_value[3] = motor_value3 - sit_result;
+	buff_motor_value[1] = sit_result;
+	buff_motor_value[2] = (2*sit_result);
+	buff_motor_value[3] = sit_result;
 	buff_motor_value[4] = buff_motor_value1[4] - R_shift_result;
 	buff_motor_value[5] = buff_motor_value1[5];
 
 	buff_motor_value[6] = buff_motor_value1[6] - R_shift_result; 
-	buff_motor_value[7] = motor_value7 + result_the_c;
-	buff_motor_value[8] = motor_value8 + result_the_b;
-	buff_motor_value[9] = motor_value9 + result_the_a;
+	buff_motor_value[7] = result_the_c;
+	buff_motor_value[8] = result_the_b;
+	buff_motor_value[9] = result_the_a;
 	buff_motor_value[10] = buff_motor_value1[10];
 	buff_motor_value[11] = buff_motor_value1[11];
 
@@ -775,9 +799,9 @@ void CSimulate::R_foot_center(float X_M, float Z_M)
 	buff_motor_value[5] = buff_motor_value1[5];
 
 	buff_motor_value[6] = buff_motor_value1[6]; 
-	buff_motor_value[7] = motor_value7 + result_the_c;
-	buff_motor_value[8] = motor_value8 + result_the_b;
-	buff_motor_value[9] = motor_value9 + result_the_a;
+	buff_motor_value[7] = result_the_c;
+	buff_motor_value[8] = result_the_b;
+	buff_motor_value[9] = result_the_a;
 	buff_motor_value[10] = buff_motor_value1[10];
 	buff_motor_value[11] = buff_motor_value1[11];
 
@@ -826,9 +850,9 @@ void CSimulate::R_foot_up_(float X_M, float Z_M)
 	buff_motor_value1[5] = buff_motor_value[5];
 
 	buff_motor_value1[6] = buff_motor_value[6]; 
-	buff_motor_value1[7] = motor_value7 + result_the_c;
-	buff_motor_value1[8] = motor_value8 + result_the_b;
-	buff_motor_value1[9] = motor_value9 + result_the_a;
+	buff_motor_value1[7] = result_the_c;
+	buff_motor_value1[8] = result_the_b;
+	buff_motor_value1[9] = result_the_a;
 	buff_motor_value1[10] = buff_motor_value[10];
 	buff_motor_value1[11] = buff_motor_value[11];
 

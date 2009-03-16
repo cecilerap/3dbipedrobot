@@ -47,8 +47,6 @@ void CNodeMgr::Draw()
 
 void CNodeMgr::SetAngle(COMPONENT id, float angle)
 {
-	float m_angle = timeGetTime()/2000.f;
-
 	switch(id)
 	{
 	//////////////////////////////////////////////////////////////////////////
