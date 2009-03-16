@@ -5,25 +5,6 @@
 #pragma once
 #include "DirectX3D.h"
 
-#define motor_value0		535
-#define motor_value1		475
-#define motor_value2		420
-#define motor_value3		465
-#define motor_value4		475
-#define motor_value5		483
-#define motor_value6		475
-#define motor_value7		620
-#define motor_value8		670
-#define motor_value9		555
-#define motor_value10		540
-#define motor_value11		480
-#define motor_value12		478
-#define motor_value13		514
-#define motor_value14		519
-#define motor_value15		545
-#define motor_value16		519
-#define motor_value17		514
-
 class CSimulate
 {
 public:
