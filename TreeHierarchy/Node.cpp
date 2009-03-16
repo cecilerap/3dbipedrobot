@@ -64,7 +64,17 @@ CNode::~CNode(void)
 
 D3DXMATRIXA16* CNode::Animate(D3DXMATRIXA16* pParentTM)
 {
-	m_matTM = m_matLocal * m_matAni * *pParentTM;
+// 	if(m_nObjectID == LEG_LOW_L || m_nObjectID == LEG_LOW_R)
+// 	{
+// 		D3DXMatrixTranslation(&m_matLocal, 0, 0, 0);
+// 		m_matTM = m_matLocal * m_matAni * *pParentTM;
+// 		m_matTM.m[3][1] -= 21.f;
+// 		return &m_matTM;
+// 	}
+	
+// 	D3DXMatrixTranslation(&m_matLocal, 0, 0, 0);
+// 	m_matTM = m_matLocal * m_matAni * *pParentTM;
+// 	m_matTM.m[3][1] -= m_matLocal.m[3][2];
 	return &m_matTM;
 }
 
