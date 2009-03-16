@@ -31,7 +31,7 @@ void CNodeMgr::Animate()
 	{
 		id = m_nodes[i]->GetParentID();
 		pTM = m_nodes[id]->GetMatrixTM();
-	
+
 		m_nodes[i]->Animate(pTM);
 	}
 }
