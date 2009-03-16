@@ -81,8 +81,8 @@ void CSimulate::Walking()
 // 		}
 // 		else if(flag1)
 // 		{
-// 			L_shift(shift);
-// 			R_foot_up(rxd[1]/2 , 12);
+ 			L_shift(10.f);
+ 			R_foot_up(30, 12);
 // 			//				center();
 // 
 // 			move_R(shift);
@@ -234,7 +234,7 @@ void CSimulate::L_shift(float Y)
 {
 	L_shift_result = asin((float)(Y/(2*L)));
 
-	buff_motor_value[0] = buff_motor_value1[0] - L_shift_result-1; //-10
+	buff_motor_value[0] = buff_motor_value1[0] - L_shift_result; //-10
 	buff_motor_value[1] = buff_motor_value1[1];
 	buff_motor_value[2] = buff_motor_value1[2];
 	buff_motor_value[3] = buff_motor_value1[3];
@@ -289,13 +289,13 @@ void CSimulate::R_foot_up(float X_M, float Z_M)
 	buff_motor_value1[1] = buff_motor_value[1];
 	buff_motor_value1[2]  =buff_motor_value[2];
 	buff_motor_value1[3] = buff_motor_value[3];
-	buff_motor_value1[4] = buff_motor_value[4] + L_shift_result;
+	buff_motor_value1[4] = buff_motor_value[4];
 	buff_motor_value1[5] = buff_motor_value[5];
 
 	buff_motor_value1[6] = buff_motor_value[6]; 
-	buff_motor_value1[7] = motor_value7 + result_the_c;
-	buff_motor_value1[8] = motor_value8 + result_the_b;
-	buff_motor_value1[9] = motor_value9 + result_the_a;
+	buff_motor_value1[7] = -result_the_c;
+	buff_motor_value1[8] = result_the_b;
+	buff_motor_value1[9] = -result_the_a;
 	buff_motor_value1[10] = buff_motor_value[10];
 	buff_motor_value1[11] = buff_motor_value[11];
 
@@ -311,13 +311,13 @@ void CSimulate::R_foot_up(float X_M, float Z_M)
 	{
 		for(int j = 0; j < 18; j++)												//테이블내의 테이터 증가
 		{
-			motor_value[j][i] = (i * buff_motor_value1[j] + ((TABLE-1) - i) * buff_motor_value[j] ) / (TABLE-1);       //내분점공식
+			motor_value[j][i] = (i * buff_motor_value1[j] + ((TABLE-1) - i) * buff_motor_value[j]) / (TABLE-1);       //내분점공식
 		}
 	}
 
 	for(int k = 0; k < TABLE ; k++)
 	{
-		for(int l = 0; L < 18; l++)
+		for(int l = 0; l < 18; l++)
 		{ 
 			motor[l] = motor_value[l][k];
 		}
