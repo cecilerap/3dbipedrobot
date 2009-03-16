@@ -19,16 +19,16 @@ MESHCOMPONENT g_meshComponent[22] =
 	{L"ARM_middle_R.X",   ARM_MIDDLE_R,   ARM_SHOULDER_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
 	{L"ARM_low_R.X",      ARM_LOW_R,      ARM_MIDDLE_R,   {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,-20.f,1.f}},
 
-	{L"LEG_up_L.X",      LEG_UP_L,      BODY,          {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -8.f,0.f,-20.f,1.f}},
-	{L"LEG_upMotor_L.X", LEG_UPMOTOR_L, BODY,          {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -8.f,0.f,-20.f,1.f}},
+	{L"LEG_up_L.X",      LEG_UP_L,      BODY,          {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -9.f,0.f,-20.f,1.f}},
+	{L"LEG_upMotor_L.X", LEG_UPMOTOR_L, BODY,          {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, -9.f,0.f,-20.f,1.f}},
 	{L"LEG_middle_L.X",  LEG_MIDDLE_L,  LEG_UPMOTOR_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
 	{L"LEG_low_L.X",     LEG_LOW_L,     LEG_MIDDLE_L,  {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,-21.f,1.f}},
 
 	{L"FOOT_L.X",       FOOT_L,       LEG_LOW_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,10.f,-27.f,1.f}},
 	{L"FOOT_motor_L.X", FOOT_MOTOR_L, FOOT_L,    {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,-10.f,5.f,1.f}},
 	
-	{L"LEG_up_R.X",      LEG_UP_R,      BODY,          {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 8.f,0.f,-20.f,1.f}},
-	{L"LEG_upMotor_R.X", LEG_UPMOTOR_R, BODY,          {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 8.f,0.f,-20.f,1.f}},
+	{L"LEG_up_R.X",      LEG_UP_R,      BODY,          {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 9.f,0.f,-20.f,1.f}},
+	{L"LEG_upMotor_R.X", LEG_UPMOTOR_R, BODY,          {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 9.f,0.f,-20.f,1.f}},
 	{L"LEG_middle_R.X",  LEG_MIDDLE_R,  LEG_UPMOTOR_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,0.f,1.f}},
 	{L"LEG_low_R.X",     LEG_LOW_R,     LEG_MIDDLE_R,  {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,-21.f,1.f}},
 
@@ -64,17 +64,19 @@ CNode::~CNode(void)
 
 D3DXMATRIXA16* CNode::Animate(D3DXMATRIXA16* pParentTM)
 {
-	if(m_nObjectID == LEG_LOW_L || m_nObjectID == LEG_LOW_R)
-	{
-		D3DXMATRIXA16 temp(m_matLocal);
-		D3DXMatrixTranslation(&m_matLocal, 0, 0, 0);
-		m_matTM = m_matLocal * m_matAni * *pParentTM;
-		m_matTM.m[3][1] += temp.m[3][2];
-		m_matLocal = temp;
-		return &m_matTM;
-	}
+// 	if(m_nObjectID == LEG_LOW_L || m_nObjectID == LEG_LOW_R)
+// 	{
+// 		D3DXMATRIXA16 temp(m_matLocal);
+// 		D3DXMatrixTranslation(&m_matLocal, 0, 0, 0);
+// 		m_matTM = m_matLocal * m_matAni * *pParentTM;
+// 		m_matTM.m[3][0] += temp.m[3][0];
+// 		m_matTM.m[3][1] += temp.m[3][2];
+// 		m_matTM.m[3][2] += temp.m[3][1];
+// 		m_matLocal = temp;
+// 		return &m_matTM;
+// 	}
 
-	m_matTM = m_matLocal * m_matAni * *pParentTM;
+	m_matTM = m_matAni * *pParentTM * m_matLocal;
 	return &m_matTM;
 
 // 	D3DXMATRIX temp(m_matLocal);
@@ -107,7 +109,7 @@ D3DXMATRIXA16* CNode::Animate(D3DXMATRIXA16* pParentTM)
 // 	m_matTM.m[3][0] += temp.m[3][0];
 // 	m_matTM.m[3][1] += temp.m[3][2];
 // 	m_matTM.m[3][2] += temp.m[3][1];
-// 	m_matLocal = temp;
+// //	m_matLocal = temp;
 // 	return &m_matTM;
 }
 
