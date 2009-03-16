@@ -64,18 +64,51 @@ CNode::~CNode(void)
 
 D3DXMATRIXA16* CNode::Animate(D3DXMATRIXA16* pParentTM)
 {
-// 	if(m_nObjectID == LEG_LOW_L || m_nObjectID == LEG_LOW_R)
-// 	{
-// 		D3DXMatrixTranslation(&m_matLocal, 0, 0, 0);
-// 		m_matTM = m_matLocal * m_matAni * *pParentTM;
-// 		m_matTM.m[3][1] -= 21.f;
-// 		return &m_matTM;
-// 	}
-	
+	if(m_nObjectID == LEG_LOW_L || m_nObjectID == LEG_LOW_R)
+	{
+		D3DXMATRIXA16 temp(m_matLocal);
+		D3DXMatrixTranslation(&m_matLocal, 0, 0, 0);
+		m_matTM = m_matLocal * m_matAni * *pParentTM;
+		m_matTM.m[3][1] += temp.m[3][2];
+		m_matLocal = temp;
+		return &m_matTM;
+	}
+
+	m_matTM = m_matLocal * m_matAni * *pParentTM;
+	return &m_matTM;
+
+// 	D3DXMATRIX temp(m_matLocal);
+// 
 // 	D3DXMatrixTranslation(&m_matLocal, 0, 0, 0);
 // 	m_matTM = m_matLocal * m_matAni * *pParentTM;
-// 	m_matTM.m[3][1] -= m_matLocal.m[3][2];
-	return &m_matTM;
+// 	m_matTM.m[3][0] += temp.m[3][0];
+// 	m_matTM.m[3][1] += temp.m[3][2];
+// 	m_matTM.m[3][2] += temp.m[3][1];
+
+// 	if(m_nObjectID == LEG_LOW_L || m_nObjectID == LEG_LOW_R)
+// 	{
+// 		D3DXMATRIX temp(m_matLocal);
+// 
+// 		D3DXMatrixTranslation(&m_matLocal, 0, 0, 0);
+// 		m_matTM = m_matLocal * m_matAni * *pParentTM;
+// 		m_matTM.m[3][0] += temp.m[3][0];
+// 		m_matTM.m[3][1] += temp.m[3][2];
+// 		m_matTM.m[3][2] += temp.m[3][1];
+// 
+// 		return &m_matTM;
+// 	}
+// 	
+// 	m_matTM = m_matLocal * m_matAni * *pParentTM;
+// 	return &m_matTM;
+
+// 	D3DXMATRIXA16 temp(m_matLocal);
+// 	D3DXMatrixTranslation(&m_matLocal, 0, 0, 0);
+// 	m_matTM = m_matLocal * m_matAni * *pParentTM;
+// 	m_matTM.m[3][0] += temp.m[3][0];
+// 	m_matTM.m[3][1] += temp.m[3][2];
+// 	m_matTM.m[3][2] += temp.m[3][1];
+// 	m_matLocal = temp;
+// 	return &m_matTM;
 }
 
 void CNode::SetAngle(D3DXMATRIX* (__stdcall *pfunc)(D3DXMATRIX*, FLOAT), float angle)
