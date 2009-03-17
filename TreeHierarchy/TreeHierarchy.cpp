@@ -55,7 +55,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		switch((TCHAR)wParam)
 		{
 		case 'W' :
-		case 'w' : g_Simul.SetState(CSimulate::WALKING);
+		case 'w' : g_Simul.SetState(CSimulate::WALK);
 			break;
 
 		case 'R' :
@@ -102,7 +102,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 					}
 					else
 						g_Simul.Simulate();
-//						g_DirectX3D.Render();
 				}
 			}
 		}

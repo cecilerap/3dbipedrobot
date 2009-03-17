@@ -120,6 +120,8 @@ HRESULT CDirectX3D::InitObjects()
 {
 	m_pNodeMgr = new CNodeMgr(m_pD3DDevice);
 	m_pCamera  = new CCamera(m_pD3DDevice);
+	m_pZMP     = new CZMP(m_pD3DDevice);
+	m_pZMP->SetNodeMgr(m_pNodeMgr->GetNodes());
 
 	return S_OK;
 }
@@ -154,6 +156,7 @@ void CDirectX3D::Render()
 	m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(180,250,250), 1.0f, 0);
 
 	m_pNodeMgr->Animate();
+	m_pZMP->Check();
 
 	HDC hDC;
 	hDC = GetDC(m_hWnd);

@@ -8,7 +8,8 @@
 class CSimulate
 {
 public:
-	enum STATE { READY, WALKING };
+	enum STATE { READY, WALK };
+
 public:
 	CSimulate();
 	~CSimulate(void);
@@ -46,7 +47,6 @@ private:
 	CDirectX3D* m_pDirectX3D;
 
 	STATE m_state;
-
 	float m_bodyPos;
 
 	float L, L_shift_result, R_shift_result, sit_result;
