@@ -72,3 +72,21 @@ void CNode::SetAngle(D3DXMATRIX* (__stdcall *pfunc)(D3DXMATRIX*, FLOAT), float a
 {
 	pfunc(&m_matAni, angle);
 }
+
+void CNode::SetPosition(float angle)
+{
+	float x, y, z;
+	x = m_matLocal.m[3][0];
+	y = m_matLocal.m[3][1];
+	z = m_matLocal.m[3][2];
+	D3DXMatrixTranslation(&m_matLocal, x+0.f, y+0.f, z+angle);
+	
+	if(m_nObjectID == BODY)
+	{
+		m_matLocal.m[1][1] = 0;
+		m_matLocal.m[1][2] = -1;
+		m_matLocal.m[2][1] = 1;
+		m_matLocal.m[2][2] = 0;
+	}
+	
+}
