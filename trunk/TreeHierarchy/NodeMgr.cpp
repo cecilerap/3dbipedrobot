@@ -49,6 +49,10 @@ void CNodeMgr::SetAngle(COMPONENT id, float angle)
 {
 	switch(id)
 	{
+	case BODY:
+		m_nodes[id]->SetPosition(angle);
+		break;
+
 	//////////////////////////////////////////////////////////////////////////
 	// FOOT
 	case FOOT_L: // À§¾Æ·¡·Î¸¸ ±îµü±îµü

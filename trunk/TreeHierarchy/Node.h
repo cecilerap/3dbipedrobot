@@ -33,6 +33,7 @@ public:
 	virtual void Draw() {}
 
 	void SetAngle(D3DXMATRIX* (__stdcall *pfunc)(D3DXMATRIX*, FLOAT), float angle);
+	void SetPosition(float angle);
 
 protected:
 	COMPONENT m_nObjectID;

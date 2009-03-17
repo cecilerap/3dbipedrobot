@@ -47,6 +47,8 @@ private:
 
 	STATE m_state;
 
+	float m_bodyPos;
+
 	float L, L_shift_result, R_shift_result, sit_result;
 	float buff_motor_value[18];
 	float buff_motor_value1[18];
