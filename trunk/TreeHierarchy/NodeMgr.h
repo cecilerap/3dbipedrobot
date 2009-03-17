@@ -20,6 +20,8 @@ public:
 
 	void SetAngle(COMPONENT id, float angle);
 
+	vector<CNode*> GetNodes()	{ return m_nodes; }
+
 protected:
 	vector<CNode*> m_nodes;
 

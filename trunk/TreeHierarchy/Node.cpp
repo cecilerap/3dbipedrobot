@@ -25,7 +25,7 @@ MESHCOMPONENT g_meshComponent[22] =
 	{L"LEG_low_L.X",     LEG_LOW_L,     LEG_MIDDLE_L,  {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,-21.f,1.f}},
 
 	{L"FOOT_motor_L.X", FOOT_MOTOR_L, LEG_LOW_L,    {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,-22.f,1.f}},
-	{L"FOOT_L.X",       FOOT_L,       FOOT_MOTOR_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,10.f,-8.f,1.f}},
+	{L"FOOT_L.X",       FOOT_L,       FOOT_MOTOR_L, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,10.f,-9.f,1.f}},
 
 	{L"LEG_up_R.X",      LEG_UP_R,      BODY,          {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 9.f,0.f,-20.f,1.f}},
 	{L"LEG_upMotor_R.X", LEG_UPMOTOR_R, BODY,          {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 9.f,0.f,-20.f,1.f}},
@@ -33,7 +33,7 @@ MESHCOMPONENT g_meshComponent[22] =
 	{L"LEG_low_R.X",     LEG_LOW_R,     LEG_MIDDLE_R,  {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,-21.f,1.f}},
 
 	{L"FOOT_motor_R.X", FOOT_MOTOR_R, LEG_LOW_R,    {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,0.f,-22.f,1.f}},
-	{L"FOOT_R.X",       FOOT_R,       FOOT_MOTOR_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,10.f,-8.f,1.f}},
+	{L"FOOT_R.X",       FOOT_R,       FOOT_MOTOR_R, {1.f,0.f,0.f,0.f, 0.f,1.f,0.f,0.f, 0.f,0.f,1.f,0.f, 0.f,10.f,-9.f,1.f}},
 	
 	{L"PLANE.X", ORIGIN, NOTHING, {2.f,0.f,0.f,0.f, 0.f,0.f,-2.f,0.f, 0.f,2.f,0.f,0.f, 0.f,0.f,0.f,1.f}}
 };
@@ -73,20 +73,23 @@ void CNode::SetAngle(D3DXMATRIX* (__stdcall *pfunc)(D3DXMATRIX*, FLOAT), float a
 	pfunc(&m_matAni, angle);
 }
 
-void CNode::SetPosition(float angle)
+void CNode::SetPosition(float x, float y, float z)
 {
-	float x, y, z;
-	x = m_matLocal.m[3][0];
-	y = m_matLocal.m[3][1];
-	z = m_matLocal.m[3][2];
-	D3DXMatrixTranslation(&m_matLocal, x+0.f, y+0.f, z+angle);
-	
+	float oldX, oldY, oldZ;
+	oldX = m_matLocal.m[3][0];
+	oldY = m_matLocal.m[3][1];
+	oldZ = m_matLocal.m[3][2];
+
 	if(m_nObjectID == BODY)
 	{
+		D3DXMatrixTranslation(&m_matLocal, oldX+x, oldY+y, oldZ+z);
+
+		// 자동으로 Identity 되서 강제 수정!
 		m_matLocal.m[1][1] = 0;
 		m_matLocal.m[1][2] = -1;
 		m_matLocal.m[2][1] = 1;
 		m_matLocal.m[2][2] = 0;
 	}
-	
+	else
+		D3DXMatrixTranslation(&m_matLocal, oldX+x, oldY-z, oldZ+y);
 }

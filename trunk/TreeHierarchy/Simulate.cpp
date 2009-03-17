@@ -29,7 +29,7 @@ void CSimulate::Simulate()
 	case READY:
 		Ready();
 		break;
-	case WALKING:
+	case WALK:
 		Walking();
 		break;
 	default:
@@ -58,22 +58,21 @@ void CSimulate::Walking()
 		move_R(10.f);
 		move_center(-30.f,0);
 
-		R_shift(10.f);
-		L_foot_center(0,12);
-		
-		L_foot_up(30/2,12);
-
-		move_L(10.f);
-		move_center_(-30,0);
-
-
-		L_shift_(10.f);
-		R_foot_center(0,12);
-
-		R_foot_up_(30/2,12);
-
-		move_R(10.f);
-		move_center(-30,0);
+// 		R_shift(10.f);
+// 		L_foot_center(0,12);
+// 		
+// 		L_foot_up(30/2,12);
+// 
+// 		move_L(10.f);
+// 		move_center_(-30,0);
+// 
+// 		L_shift_(10.f);
+// 		R_foot_center(0,12);
+// 
+// 		R_foot_up_(30/2,12);
+// 
+// 		move_R(10.f);
+// 		move_center(-30,0);
 // 	}
 
 // 	if(rxd[0] == 0)
