@@ -120,8 +120,6 @@ HRESULT CDirectX3D::InitObjects()
 {
 	m_pNodeMgr = new CNodeMgr(m_pD3DDevice);
 	m_pCamera  = new CCamera(m_pD3DDevice);
-	m_pZMP     = new CZMP(m_pD3DDevice);
-	m_pZMP->SetNodeMgr(m_pNodeMgr->GetNodes());
 
 	return S_OK;
 }
@@ -156,27 +154,26 @@ void CDirectX3D::Render()
 	m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(180,250,250), 1.0f, 0);
 
 	m_pNodeMgr->Animate();
-	m_pZMP->Check();
 
-	HDC hDC;
-	hDC = GetDC(m_hWnd);
-	SetBkColor(hDC, RGB(180,250,250));
-	TCHAR str[256] = {0,};
+// 	HDC hDC;
+// 	hDC = GetDC(m_hWnd);
+// 	SetBkColor(hDC, RGB(180,250,250));
+// 	TCHAR str[256] = {0,};
 
 	if(SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
 		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 		// 문자열 출력
-		TextOut(hDC, 10, 10, L"Mouse Left Button Down + ↑↓←→ [카메라 이동]", 38);
-		swprintf(str, L"Θ : %.2lf, Φ : %.2lf, Radius : %.2lf", m_pCamera->GetTheta(), m_pCamera->GetPhi(), m_pCamera->GetRadius());
-		TextOut(hDC, 10, 30, str, wcslen(str));
+// 		TextOut(hDC, 10, 10, L"Mouse Left Button Down + ↑↓←→ [카메라 이동]", 38);
+// 		swprintf(str, L"Θ : %.2lf, Φ : %.2lf, Radius : %.2lf", m_pCamera->GetTheta(), m_pCamera->GetPhi(), m_pCamera->GetRadius());
+// 		TextOut(hDC, 10, 30, str, wcslen(str));
 
 		m_pD3DDevice->SetStreamSource(0, m_pXYZVB, 0, sizeof(CUSTOMVERTEXXYZ));
 		m_pD3DDevice->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
 		m_pD3DDevice->DrawPrimitive(D3DPT_LINELIST, 0, 3);
 
-		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+//		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 		// mesh 그려주는 작업
 		m_pNodeMgr->Draw();
@@ -184,7 +181,7 @@ void CDirectX3D::Render()
 		m_pD3DDevice->EndScene();
 	}
 
-	ReleaseDC(m_hWnd, hDC);
+//	ReleaseDC(m_hWnd, hDC);
 
 	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }

@@ -8,8 +8,8 @@
 
 enum COMPONENT { NOTHING = 0, BODY, HEAD,
 				 ARM_SHOULDER_L, ARM_MIDDLE_L, ARM_LOW_L, ARM_SHOULDER_R, ARM_MIDDLE_R, ARM_LOW_R,
-				 LEG_UP_L, LEG_UPMOTOR_L, LEG_MIDDLE_L, LEG_LOW_L, FOOT_MOTOR_L, FOOT_L,
-				 LEG_UP_R, LEG_UPMOTOR_R, LEG_MIDDLE_R, LEG_LOW_R, FOOT_MOTOR_R, FOOT_R, ORIGIN };
+				 LEG_UP_L, LEG_UPMOTOR_L, LEG_MIDDLE_L, LEG_LOW_L, FOOT_L, FOOT_MOTOR_L,
+				 LEG_UP_R, LEG_UPMOTOR_R, LEG_MIDDLE_R, LEG_LOW_R, FOOT_R, FOOT_MOTOR_R/*, ORIGIN*/ };
 
 typedef struct _MESHCOMPONENT
 {
@@ -27,6 +27,9 @@ public:
 
 	int GetObjectID() { return m_nObjectID; }
 	int GetParentID() { return m_nParentID; }
+
+	D3DXMATRIXA16* GetMatrixLocal() { return &m_matLocal; }
+	D3DXMATRIXA16* GetMatrixAni() { return &m_matAni; }
 	D3DXMATRIXA16* GetMatrixTM() { return &m_matTM; }
 
 	D3DXMATRIXA16* Animate(D3DXMATRIXA16* pParentTM);

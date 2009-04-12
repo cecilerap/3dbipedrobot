@@ -9,19 +9,23 @@ CNodeMgr::CNodeMgr(LPDIRECT3DDEVICE9 pD3DDevice)
 	m_pD3DDevice = pD3DDevice;
 	D3DXMatrixIdentity(&m_matTM);
 
+	m_pZmp = new CZMP(pD3DDevice);
+
 	for(int i = 0; i < sizeof(g_meshComponent)/sizeof(MESHCOMPONENT); ++i)
 		m_nodes.push_back(new CMesh(m_pD3DDevice, g_meshComponent[i]));
 }
 
 CNodeMgr::~CNodeMgr(void)
 {
+	free(m_pZmp);
+
 	for(int i = 0; i < sizeof(g_meshComponent)/sizeof(MESHCOMPONENT); ++i)
 	{
 		if(m_nodes[i] != NULL)
 			free(m_nodes[i]);
 	}
 }
-#pragma comment(lib, "winmm.lib")
+
 void CNodeMgr::Animate()
 {
 	int id;
@@ -32,17 +36,31 @@ void CNodeMgr::Animate()
 		id = m_nodes[i]->GetParentID();
 		pTM = m_nodes[id]->GetMatrixTM();
 
-		m_nodes[i]->Animate(pTM);
+		if(i == FOOT_L)
+//			m_pLFootTM = m_nodes[i]->Animate(pTM);
+			m_pZmp->SetVertics(CZMP::LEFT, m_nodes[i]->Animate(pTM));
+		else if(i == FOOT_R)
+//			m_pRFootTM = m_nodes[i]->Animate(pTM);
+			m_pZmp->SetVertics(CZMP::RIGHT, m_nodes[i]->Animate(pTM));
+		else
+			m_nodes[i]->Animate(pTM);
 	}
+
+//	m_pZmp->SetVertics(CZMP::LEFT,  m_pLFootTM);
+//	m_pZmp->SetVertics(CZMP::RIGHT, m_pRFootTM);
+	m_pZmp->Initialize();
 }
 
 void CNodeMgr::Draw()
 {
 	for(DWORD i = 0; i < m_nodes.size(); ++i)
 	{
-		m_pD3DDevice->MultiplyTransform(D3DTS_WORLD, &m_matTM);
 		m_nodes[i]->Draw();
+		m_pD3DDevice->MultiplyTransform(D3DTS_WORLD, &m_matTM);
 	}
+
+	m_pZmp->Draw();
+	m_pD3DDevice->MultiplyTransform(D3DTS_WORLD, &m_matTM);
 }
 
 void CNodeMgr::SetAngle(COMPONENT id, float angle)
@@ -64,16 +82,18 @@ void CNodeMgr::SetAngle(COMPONENT id, float angle)
 
 	case FOOT_MOTOR_L: // 좌우로
 		m_nodes[id]->SetAngle(D3DXMatrixRotationZ, angle);
+//		m_nodes[FOOT_L]->SetAngle(D3DXMatrixRotationZ, angle);		// 왜 했는지 까먹엇음.. 안해도 똑같은데... -_ -
 		break;
 	case FOOT_MOTOR_R:
 		m_nodes[id]->SetAngle(D3DXMatrixRotationZ, angle);
+//		m_nodes[FOOT_R]->SetAngle(D3DXMatrixRotationZ, angle);
 		break;
 	//////////////////////////////////////////////////////////////////////////
 
 
 	//////////////////////////////////////////////////////////////////////////
 	// LEG
-	case LEG_LOW_L: // 앞뒤로 (무릎)
+	case LEG_LOW_L:		// 앞뒤로 (무릎)
 		m_nodes[id]->SetAngle(D3DXMatrixRotationX, angle);
 		break;
 	case LEG_LOW_R:

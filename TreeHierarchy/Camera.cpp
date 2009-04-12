@@ -16,7 +16,8 @@ void CCamera::SetCamera()
 	
 	D3DXVECTOR3 pos((float)(m_radius*cos(theta)*cos(phi)), (float)(m_radius*sin(phi)), (float)(m_radius*sin(theta)*cos(phi)));
 
-	D3DXMATRIXA16 matView;
+	D3DXMATRIX matView;
+	D3DXMatrixIdentity(&matView);
 	D3DXMatrixLookAtLH(&matView, &pos, &D3DXVECTOR3(0.f,0.f,0.f), &D3DXVECTOR3(0.f,1.f,0.f));
 	m_pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
 }
