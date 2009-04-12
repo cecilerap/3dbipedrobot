@@ -29,8 +29,5 @@ protected:
 	LPDIRECT3DDEVICE9 m_pD3DDevice;
 	D3DXMATRIXA16 m_matTM;
 
-	D3DXMATRIXA16* m_pLFootTM;
-	D3DXMATRIXA16* m_pRFootTM;
-
 	CZMP* m_pZmp;
 };
