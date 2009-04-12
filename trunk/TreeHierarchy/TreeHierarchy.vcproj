@@ -191,11 +191,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ServerSocket.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Simulate.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\TreeHierarchy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ZMP.cpp"
 				>
 			</File>
 		</Filter>
@@ -225,7 +233,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ServerSocket.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Simulate.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ZMP.h"
 				>
 			</File>
 		</Filter>

@@ -8,7 +8,7 @@
 
 #include "NodeMgr.h"
 #include "Camera.h"
-#include "ZMP.h"
+
 
 #define WINDOW_WIDTH		800
 #define WINDOW_HEIGHT		800
@@ -47,5 +47,4 @@ private:
 	D3DXMATRIXA16 m_matProj;
 
 	CNodeMgr* m_pNodeMgr;
-	CZMP*     m_pZMP;	
 };

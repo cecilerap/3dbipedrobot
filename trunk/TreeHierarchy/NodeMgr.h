@@ -8,6 +8,7 @@ using namespace std;
 
 #include "Node.h"
 #include "Mesh.h"
+#include "ZMP.h"
 
 class CNodeMgr
 {
@@ -20,11 +21,16 @@ public:
 
 	void SetAngle(COMPONENT id, float angle);
 
-	vector<CNode*> GetNodes()	{ return m_nodes; }
+	CNode* GetNodes(COMPONENT id) { return m_nodes[id]; }
 
 protected:
 	vector<CNode*> m_nodes;
 
 	LPDIRECT3DDEVICE9 m_pD3DDevice;
 	D3DXMATRIXA16 m_matTM;
+
+	D3DXMATRIXA16* m_pLFootTM;
+	D3DXMATRIXA16* m_pRFootTM;
+
+	CZMP* m_pZmp;
 };
