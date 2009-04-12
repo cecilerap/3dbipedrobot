@@ -37,18 +37,12 @@ void CNodeMgr::Animate()
 		pTM = m_nodes[id]->GetMatrixTM();
 
 		if(i == FOOT_L)
-//			m_pLFootTM = m_nodes[i]->Animate(pTM);
 			m_pZmp->SetVertics(CZMP::LEFT, m_nodes[i]->Animate(pTM));
 		else if(i == FOOT_R)
-//			m_pRFootTM = m_nodes[i]->Animate(pTM);
 			m_pZmp->SetVertics(CZMP::RIGHT, m_nodes[i]->Animate(pTM));
 		else
 			m_nodes[i]->Animate(pTM);
 	}
-
-//	m_pZmp->SetVertics(CZMP::LEFT,  m_pLFootTM);
-//	m_pZmp->SetVertics(CZMP::RIGHT, m_pRFootTM);
-	m_pZmp->Initialize();
 }
 
 void CNodeMgr::Draw()
@@ -56,11 +50,17 @@ void CNodeMgr::Draw()
 	for(DWORD i = 0; i < m_nodes.size(); ++i)
 	{
 		m_nodes[i]->Draw();
+
+		if(i == FOOT_L)
+			m_pZmp->Draw(CZMP::LEFT);
+		else if(i == FOOT_R)
+			m_pZmp->Draw(CZMP::RIGHT);
+		
 		m_pD3DDevice->MultiplyTransform(D3DTS_WORLD, &m_matTM);
 	}
 
-	m_pZmp->Draw();
-	m_pD3DDevice->MultiplyTransform(D3DTS_WORLD, &m_matTM);
+//	m_pZmp->Draw();
+//	m_pD3DDevice->MultiplyTransform(D3DTS_WORLD, &m_matTM);
 }
 
 void CNodeMgr::SetAngle(COMPONENT id, float angle)

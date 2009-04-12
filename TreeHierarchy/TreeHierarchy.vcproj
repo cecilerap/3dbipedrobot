@@ -179,6 +179,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ForceSensor.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Mesh.cpp"
 				>
 			</File>
@@ -218,6 +222,10 @@
 			</File>
 			<File
 				RelativePath=".\DirectX3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ForceSensor.h"
 				>
 			</File>
 			<File
