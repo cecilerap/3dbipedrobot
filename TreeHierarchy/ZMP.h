@@ -20,9 +20,6 @@ public:
 
 private:
 	LPDIRECT3DDEVICE9 m_pD3DDevice;
-	
 	D3DXVECTOR3 m_pos[2][4];
-
-public:
 	CForceSensor* m_pSensor[8];
 };
