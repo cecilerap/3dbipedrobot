@@ -28,28 +28,36 @@ void CForceSensor::Draw()
 
 void CForceSensor::SetVertex(D3DXMATRIXA16* pMatTM)
 {
-	m_Vertics[0].position.x = pMatTM->m[3][0] + m_vec.x;
-	m_Vertics[0].position.y = pMatTM->m[3][1] + m_vec.y;
-	m_Vertics[0].position.z = pMatTM->m[3][2] + m_vec.z;
+	D3DXMATRIXA16 matTM;
+	D3DXMatrixIdentity(&matTM);
+	matTM.m[3][0] = m_vec.x;
+	matTM.m[3][1] = m_vec.y;
+	matTM.m[3][2] = m_vec.z;
 
-	m_Vertics[1].position.x = pMatTM->m[3][0] + m_vec.x +3;
-	m_Vertics[1].position.y = pMatTM->m[3][1] + m_vec.y;
-	m_Vertics[1].position.z = pMatTM->m[3][2] + m_vec.z;
+	matTM *= (*pMatTM);
 
-	m_Vertics[2].position.x = pMatTM->m[3][0] + m_vec.x +3;
-	m_Vertics[2].position.y = pMatTM->m[3][1] + m_vec.y +3;
-	m_Vertics[2].position.z = pMatTM->m[3][2] + m_vec.z;
+	m_Vertics[0].position.x = matTM.m[3][0];
+	m_Vertics[0].position.y = matTM.m[3][1];
+	m_Vertics[0].position.z = 0;				// Z축으로는 발과 딱 붙여서 이동하면 되므로 계산하지 않아도 됨
 
-	m_Vertics[3].position.x = pMatTM->m[3][0] + m_vec.x;
-	m_Vertics[3].position.y = pMatTM->m[3][1] + m_vec.y +3;
-	m_Vertics[3].position.z = pMatTM->m[3][2] + m_vec.z;
+	m_Vertics[1].position.x = matTM.m[3][0] +3;
+	m_Vertics[1].position.y = matTM.m[3][1];
+	m_Vertics[1].position.z = 0;
 
-	m_Vertics[4].position.x = pMatTM->m[3][0] + m_vec.x;
-	m_Vertics[4].position.y = pMatTM->m[3][1] + m_vec.y;
-	m_Vertics[4].position.z = pMatTM->m[3][2] + m_vec.z;
+	m_Vertics[2].position.x = matTM.m[3][0] +3;
+	m_Vertics[2].position.y = matTM.m[3][1] +3;
+	m_Vertics[2].position.z = 0;
+
+	m_Vertics[3].position.x = matTM.m[3][0];
+	m_Vertics[3].position.y = matTM.m[3][1] +3;
+	m_Vertics[3].position.z = 0;
+
+	m_Vertics[4].position.x = matTM.m[3][0];
+	m_Vertics[4].position.y = matTM.m[3][1];
+	m_Vertics[4].position.z = 0;
 
 	for(int j = 0; j < 5; ++j)
-		m_Vertics[j].color = D3DXCOLOR(0x00ff00);
+		m_Vertics[j].color = D3DXCOLOR(0x0066ff);
 
 	VOID* pVertices;
 	if(FAILED(m_pVB->Lock(0, sizeof(m_Vertics), (void**)&pVertices, 0)))
