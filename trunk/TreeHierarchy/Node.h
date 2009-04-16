@@ -9,7 +9,7 @@
 enum COMPONENT { NOTHING = 0, BODY, HEAD,
 				 ARM_SHOULDER_L, ARM_MIDDLE_L, ARM_LOW_L, ARM_SHOULDER_R, ARM_MIDDLE_R, ARM_LOW_R,
 				 LEG_UP_L, LEG_UPMOTOR_L, LEG_MIDDLE_L, LEG_LOW_L, FOOT_L, FOOT_MOTOR_L,
-				 LEG_UP_R, LEG_UPMOTOR_R, LEG_MIDDLE_R, LEG_LOW_R, FOOT_R, FOOT_MOTOR_R/*, ORIGIN*/ };
+				 LEG_UP_R, LEG_UPMOTOR_R, LEG_MIDDLE_R, LEG_LOW_R, FOOT_R, FOOT_MOTOR_R, ORIGIN };
 
 typedef struct _MESHCOMPONENT
 {
@@ -17,6 +17,7 @@ typedef struct _MESHCOMPONENT
 	COMPONENT objectID;
 	COMPONENT parentID;
 	float matTM[4][4];
+	float mass;
 } MESHCOMPONENT;
 
 class CNode
@@ -39,6 +40,8 @@ public:
 	void SetPosition(float x, float y, float z);
 
 protected:
+	LPDIRECT3DDEVICE9 m_pD3DDevice;
+
 	COMPONENT m_nObjectID;
 	COMPONENT m_nParentID;
 
@@ -46,9 +49,8 @@ protected:
 	D3DXMATRIXA16 m_matAni;			// 변화
 	D3DXMATRIXA16 m_matTM;			// 최종 출력 행렬, 변화
 
-	LPDIRECT3DDEVICE9 m_pD3DDevice;
-
-	float m_angle;
+	float m_fMass;
+	float m_fAngle;
 };
 
 

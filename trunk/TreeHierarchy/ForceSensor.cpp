@@ -8,6 +8,7 @@ CForceSensor::CForceSensor(LPDIRECT3DDEVICE9 pD3DDevice, D3DXVECTOR3 vec)
 {
 	m_pD3DDevice = pD3DDevice;
 	m_vec = vec;
+	m_fConstant = m_fDepth = 0.f;
 
 	memset(m_Vertics, 0, sizeof(m_Vertics));
 
@@ -36,6 +37,10 @@ void CForceSensor::SetVertex(D3DXMATRIXA16* pMatTM)
 
 	matTM *= (*pMatTM);
 
+	if(m_fConstant == 0)
+		m_fConstant = pMatTM->m[3][1];
+	m_fDepth = pMatTM->m[3][1];
+
 	m_Vertics[0].position.x = matTM.m[3][0];
 	m_Vertics[0].position.y = matTM.m[3][1];
 	m_Vertics[0].position.z = 0;				// Z축으로는 발과 딱 붙여서 이동하면 되므로 계산하지 않아도 됨
@@ -57,11 +62,29 @@ void CForceSensor::SetVertex(D3DXMATRIXA16* pMatTM)
 	m_Vertics[4].position.z = 0;
 
 	for(int j = 0; j < 5; ++j)
-		m_Vertics[j].color = D3DXCOLOR(0x0066ff);
+		m_Vertics[j].color = D3DXCOLOR(0xffffff);
 
 	VOID* pVertices;
 	if(FAILED(m_pVB->Lock(0, sizeof(m_Vertics), (void**)&pVertices, 0)))
 		return;
 	memcpy(pVertices, m_Vertics, sizeof(m_Vertics));
 	m_pVB->Unlock();
+}
+
+float CForceSensor::Check()		// 0이면 땅바닥이랑 딱 붙어있는거구.. 0보다 크면 땅바닥보다 내려와잇는거임~
+{
+	// 지금 현재 발은 어느 한부분이 더 올라가거나 하지 않으므로
+	// 한군데라도 위에 올라가면 전체가 올라간 것으로 판단한다!
+	return 0 - m_fDepth;
+
+// 	int belowValue = 0;
+// 	for(int i = 0; i < 5; ++i)
+// 	{
+// 		if(m_Vertics[i].position.z < 0)
+// 		{
+// 			belowValue = m_Vertics[i].position.z - 0;
+// 			break;
+// 		}
+// 	}
+// 	return belowValue;
 }

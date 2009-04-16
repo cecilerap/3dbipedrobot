@@ -21,10 +21,15 @@ public:
 	void Draw();
 	void SetVertex(D3DXMATRIXA16* pMatTM);
 
+	float Check();
+
 private:
 	LPDIRECT3DDEVICE9 m_pD3DDevice;
 	D3DXVECTOR3 m_vec;
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVB;
 	CUSTOMVERTEXFOOT m_Vertics[5];
+
+	float m_fConstant;
+	float m_fDepth;
 };

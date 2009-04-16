@@ -65,6 +65,9 @@ void CNodeMgr::Draw()
 
 void CNodeMgr::SetAngle(COMPONENT id, float angle)
 {
+ 	if(m_pZmp->Check() > 0.f)
+ 		return;
+
 	switch(id)
 	{
 	case BODY:
