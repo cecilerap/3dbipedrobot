@@ -20,8 +20,8 @@ CZMP::CZMP(LPDIRECT3DDEVICE9 pD3DDevice)
 
 	for(int i = 0; i < 4; ++i)
 	{
-		m_pSensor[i]   = new CForceSensor(pD3DDevice, m_pos[LEFT][i]);
-		m_pSensor[i+4] = new CForceSensor(pD3DDevice, m_pos[RIGHT][i]);
+		m_pSensor[i]   = new CForceSensor(pD3DDevice, m_pos[0][i]);
+		m_pSensor[i+4] = new CForceSensor(pD3DDevice, m_pos[1][i]);
 	}
 }
 
@@ -33,16 +33,29 @@ CZMP::~CZMP(void)
 
 void CZMP::SetVertics(DIR dir, D3DXMATRIXA16* pMatTM)
 {
-	int i = (dir == LEFT ? 0 : 4);
-	int end = (dir == LEFT ? 4 : 8);
-	for( ; i < end; ++i)
+	for(int i = (int)dir; i < dir+4; ++i)
 		m_pSensor[i]->SetVertex(pMatTM);
 }
 
 void CZMP::Draw(DIR dir)
 {
-	int i = (dir == LEFT ? 0 : 4);
-	int end = (dir == LEFT ? 4 : 8);
-	for( ; i < end; ++i)
+	for(int i = (int)dir; i < dir+4; ++i)
 		m_pSensor[i]->Draw();
+}
+
+float CZMP::Check()
+{
+	// 지금 현재 발은 어느 한부분이 더 올라가거나 하지 않으므로
+	// 한군데라도 위에 올라가면 전체가 올라간 것으로 판단한다!
+	return m_pSensor[0]->Check();
+
+// 	int checkValue = 0;
+// 	for(int i = 0; i < 8; ++i)
+// 	{
+// 		checkValue = m_pSensor[i]->Check();
+// 		if(checkValue > 0)
+// 			break;
+// 	}
+//
+//	return checkValue;
 }

@@ -25,7 +25,7 @@ private:
 	void Walking();
 
 	void sv_motor();
-	void initialize();
+	void initialize(float Z);
 	void sit(float Z);
 	void L_shift(float Y);
 	void R_foot_up(float X_M, float Z_M);
@@ -42,8 +42,8 @@ private:
 	float m_bodyPos;
 
 	float L_shift_result, R_shift_result, sit_result;
-	float buff_motor_value[18];
-	float buff_motor_value1[18];
+	float buff_motor_value_Start[18];
+	float buff_motor_value_End[18];
 	float motor_value[18][300];
 	float motor[18];
 
