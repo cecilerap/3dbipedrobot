@@ -6,6 +6,8 @@
 
 CNodeMgr::CNodeMgr(LPDIRECT3DDEVICE9 pD3DDevice)
 {
+	m_vOldCtWeight = m_vCtWeight = D3DXVECTOR3(0.f,0.f,0.f);
+
 	m_pD3DDevice = pD3DDevice;
 	D3DXMatrixIdentity(&m_matTM);
 
@@ -33,18 +35,32 @@ void CNodeMgr::Animate()
 	int id;
 	D3DXMATRIXA16* pTM;
 
+	float fx, fy, fz;
+	fx = fy = fz = 0.f;
+	D3DXMATRIXA16* pMatTemp;
 	for(DWORD i = 0; i < m_nodes.size(); ++i)
 	{
 		id = m_nodes[i]->GetParentID();
 		pTM = m_nodes[id]->GetMatrixTM();
 
+		pMatTemp = m_nodes[i]->Animate(pTM);
+
 		if(i == FOOT_L)
-			m_pLeftZMP->SetVertics(m_nodes[i]->Animate(pTM));
+			m_pLeftZMP->SetVertics(pMatTemp);
 		else if(i == FOOT_R)
-			m_pRightZMP->SetVertics(m_nodes[i]->Animate(pTM));
-		else
-			m_nodes[i]->Animate(pTM);
+			m_pRightZMP->SetVertics(pMatTemp);
+
+		// Calculate Center Of Weight
+		fx += pMatTemp->m[3][0];
+		fy += (pMatTemp->m[3][1]*m_nodes[i]->GetMass());
+		fz += pMatTemp->m[3][2];
 	}
+
+	m_vOldCtWeight = m_vCtWeight;
+
+	m_vCtWeight.x = fx/m_nodes.size();
+	m_vCtWeight.y = fy/2820.f;
+	m_vCtWeight.z = fz/m_nodes.size();	
 }
 
 void CNodeMgr::Draw()
@@ -53,10 +69,10 @@ void CNodeMgr::Draw()
 	{
 		m_nodes[i]->Draw();
 
-		if(i == FOOT_L)
-			m_pLeftZMP->Draw();
-		else if(i == FOOT_R)
-			m_pRightZMP->Draw();
+// 		if(i == FOOT_L)
+// 			m_pLeftZMP->Draw();
+// 		else if(i == FOOT_R)
+// 			m_pRightZMP->Draw();
 		
 		m_pD3DDevice->MultiplyTransform(D3DTS_WORLD, &m_matTM);
 	}
@@ -69,7 +85,7 @@ void CNodeMgr::SetAngle(COMPONENT id, float angle)
 	switch(id)
 	{
 	case BODY:
-		m_nodes[id]->SetPosition(0.f, 0.f, angle);
+		m_nodes[id]->SetOffsetPos(0.f, 0.f, angle);
 		break;
 
 	//////////////////////////////////////////////////////////////////////////
@@ -146,4 +162,18 @@ void CNodeMgr::SetAngle(COMPONENT id, float angle)
 	default:
 		break;
 	}
+}
+
+void CNodeMgr::SetWeight()
+{
+	D3DXMATRIXA16 matTemp;
+	D3DXMatrixIdentity(&matTemp);
+	matTemp.m[3][0] = m_vCtWeight.x - m_vOldCtWeight.x;
+	matTemp.m[3][1] = m_vCtWeight.y - m_vOldCtWeight.y;
+	matTemp.m[3][2] = m_vCtWeight.z - m_vOldCtWeight.z;
+
+ 	for(DWORD i = 0; i < m_nodes.size(); ++i)
+ 	{
+ 		m_nodes[i]->SetWeight(&matTemp);
+ 	}
 }

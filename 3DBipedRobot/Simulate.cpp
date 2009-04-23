@@ -13,7 +13,7 @@ CSimulate::CSimulate(C3DBipedRobotDlg* pRobotDlg)
 	m_pRobotDlg = pRobotDlg;
 
 	m_state = READY;
-	m_bodyPos = 0.f;
+	m_fBodyPos = m_fStartPos = 0.f;
 
 	memset(buff_motor_value_Start, 0, sizeof(buff_motor_value_Start));
 	memset(buff_motor_value_End, 0, sizeof(buff_motor_value_End));
@@ -39,9 +39,12 @@ void CSimulate::Simulate()
 	case READY:
 		Ready();
 		break;
+	case START:
+		Start();
+		break;
 	case WALK:
 		m_state = NOTHING;
-		CreateThread(NULL, NULL, CallBackWalking, this, 0, 0);/*Walking();*/
+		CreateThread(NULL, NULL, CallBackWalking, this, 0, 0);
 		break;
 	default:
 		break;
@@ -57,42 +60,46 @@ void CSimulate::Ready()
 	initialize(5.f);
 }
 
-void CSimulate::Walking()
+void CSimulate::Start()
 {
-	//forward
-	L_shift(50);		// shift 를 일정값 이상으로 하면 넘어져야함!
-
-	R_foot_up(0,15);
-
-	move_center(step*-1,0);
-
-
-	R_shift(shift);
-
-	L_foot_up(0,15);
-
-	move_center_(step*-1,0);
-
-//////////////////////////////////////////////////////////////////////////
-
-	L_shift(shift);
-
-	R_foot_up(0,15);
-
-	move_center(step*-1,0);
-
-
-	R_shift(shift);
-
-	L_foot_up(0,15);
-
-	move_center_(step*-1,0);
+	m_fBodyPos = (m_fStartPos*-1);
+	initialize(5.f);			// initialize 에서 m_fStartPos 변화시키면서 작업하므로
+	m_fStartPos = 0.f;			// 반드시 initialize 한 후 m_fStartPos 초기화 시킬것!
 
 	m_state = READY;
 }
 
+void CSimulate::Walking()
+{
+	// Send to Robot
+	// 로봇에게 전송하는 부분 여기에 넣기! 
+
+//	cs.Lock();
+
+	L_shift(shift);		// shift 를 일정값 이상으로 하면 넘어져야함!
+	R_foot_up(0,15);
+	move_center(step*-1,0);
+
+	R_shift(shift);
+	L_foot_up(0,15);
+	move_center_(step*-1,0);
+
+	L_shift(shift);
+	R_foot_up(0,15);
+	move_center(step*-1,0);
+
+	R_shift(shift);
+	L_foot_up(0,15);
+	move_center_(step*-1,0);
+
+	m_state = READY;
+
+//	cs.Unlock();
+}
+
 void CSimulate::initialize(float Z)
 {
+	L_shift_result = R_shift_result = sit_result = 0.f;
 	memset(buff_motor_value_Start, 0, sizeof(buff_motor_value_Start));
 	memset(buff_motor_value_End, 0, sizeof(buff_motor_value_End));
 
@@ -135,15 +142,15 @@ void CSimulate::initialize(float Z)
 
 void CSimulate::sv_motor()
 {
-	m_pRobotDlg->m_pNodeMgr->SetAngle(FOOT_MOTOR_L,	motor[0]);
-	m_pRobotDlg->m_pNodeMgr->SetAngle(FOOT_L,		motor[1]);
+	m_pRobotDlg->m_pNodeMgr->SetAngle(FOOT_MOTOR_L,	 motor[0]);
+	m_pRobotDlg->m_pNodeMgr->SetAngle(FOOT_L,		 motor[1]);
 	m_pRobotDlg->m_pNodeMgr->SetAngle(LEG_LOW_L,     motor[2]);
 	m_pRobotDlg->m_pNodeMgr->SetAngle(LEG_MIDDLE_L,  motor[3]);
 	m_pRobotDlg->m_pNodeMgr->SetAngle(LEG_UPMOTOR_L, motor[4]);
 	m_pRobotDlg->m_pNodeMgr->SetAngle(LEG_UP_L,      motor[5]);
 
-	m_pRobotDlg->m_pNodeMgr->SetAngle(FOOT_MOTOR_R,	motor[6]);
-	m_pRobotDlg->m_pNodeMgr->SetAngle(FOOT_R,		motor[7]);
+	m_pRobotDlg->m_pNodeMgr->SetAngle(FOOT_MOTOR_R,  motor[6]);
+	m_pRobotDlg->m_pNodeMgr->SetAngle(FOOT_R,		 motor[7]);
 	m_pRobotDlg->m_pNodeMgr->SetAngle(LEG_LOW_R,     motor[8]);
 	m_pRobotDlg->m_pNodeMgr->SetAngle(LEG_MIDDLE_R,  motor[9]);
 	m_pRobotDlg->m_pNodeMgr->SetAngle(LEG_UPMOTOR_R, motor[10]);
@@ -157,8 +164,9 @@ void CSimulate::sv_motor()
 	m_pRobotDlg->m_pNodeMgr->SetAngle(ARM_MIDDLE_R,   motor[16]);
 	m_pRobotDlg->m_pNodeMgr->SetAngle(ARM_LOW_R,      motor[17]);
 
-	m_pRobotDlg->m_pNodeMgr->SetAngle(BODY,           m_bodyPos);
-	m_bodyPos = 0.f;
+	m_pRobotDlg->m_pNodeMgr->SetAngle(BODY,           m_fBodyPos);
+	m_fStartPos += m_fBodyPos;
+	m_fBodyPos = 0.f;
 
 	m_pRobotDlg->Render();
 	Sleep(time);
@@ -364,7 +372,7 @@ void CSimulate::move_center(float X_R, float Z_R)
 			motor[l] = motor_value[l][k];
 		}
 
-		m_bodyPos = (10.f/TABLE);
+		m_fBodyPos = (10.f/TABLE);
 		sv_motor();
 	}
 }
@@ -520,7 +528,7 @@ void CSimulate::move_center_(float X_R, float Z_R)
 		{ 
 			motor[l] = motor_value[l][k];
 		}
-		m_bodyPos = (10.f/TABLE);
+		m_fBodyPos = (10.f/TABLE);
 		sv_motor();
 	}
 }
