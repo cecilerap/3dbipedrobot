@@ -91,21 +91,19 @@ void CNodeMgr::SetAngle(COMPONENT id, float angle)
 	//////////////////////////////////////////////////////////////////////////
 	// FOOT
 	case FOOT_L: // 위아래로만 까딱까딱
-		m_nodes[id]->SetAngle(D3DXMatrixRotationX, angle);
+		m_nodes[id]->SetAngle(D3DXMatrixRotationY, angle);
 // 		if((y=m_pZmp->Check()) > 0.f)
 // 			m_nodes[BODY]->SetPosition(0.f, y/10, 0.f);
 		break;
 	case FOOT_R:
-		m_nodes[id]->SetAngle(D3DXMatrixRotationX, angle);
+		m_nodes[id]->SetAngle(D3DXMatrixRotationY, angle);
 		break;
 
 	case FOOT_MOTOR_L: // 좌우로
-		m_nodes[id]->SetAngle(D3DXMatrixRotationZ, angle);
-//		m_nodes[FOOT_L]->SetAngle(D3DXMatrixRotationZ, angle);		// 왜 했는지 까먹엇음.. 안해도 똑같은데... -_ -
+		m_nodes[id]->SetAngle(D3DXMatrixRotationX, angle);
 		break;
 	case FOOT_MOTOR_R:
-		m_nodes[id]->SetAngle(D3DXMatrixRotationZ, angle);
-//		m_nodes[FOOT_R]->SetAngle(D3DXMatrixRotationZ, angle);
+		m_nodes[id]->SetAngle(D3DXMatrixRotationX, angle);
 		break;
 	//////////////////////////////////////////////////////////////////////////
 
@@ -168,12 +166,16 @@ void CNodeMgr::SetWeight()
 {
 	D3DXMATRIXA16 matTemp;
 	D3DXMatrixIdentity(&matTemp);
-	matTemp.m[3][0] = m_vCtWeight.x - m_vOldCtWeight.x;
-	matTemp.m[3][1] = m_vCtWeight.y - m_vOldCtWeight.y;
-	matTemp.m[3][2] = m_vCtWeight.z - m_vOldCtWeight.z;
+// 	matTemp.m[3][0] = m_vCtWeight.x - m_vOldCtWeight.x;
+// 	matTemp.m[3][1] = m_vCtWeight.y - m_vOldCtWeight.y;
+// 	matTemp.m[3][2] = m_vCtWeight.z - m_vOldCtWeight.z;
 
- 	for(DWORD i = 0; i < m_nodes.size(); ++i)
- 	{
- 		m_nodes[i]->SetWeight(&matTemp);
- 	}
+// 	matTemp.m[3][0] = -1;
+// 	matTemp.m[3][1] = -1;
+// 	matTemp.m[3][2] = 0;
+
+  	for(DWORD i = 0; i < m_nodes.size(); ++i)
+  	{
+  		m_nodes[i]->SetWeight(&matTemp);
+  	}
 }

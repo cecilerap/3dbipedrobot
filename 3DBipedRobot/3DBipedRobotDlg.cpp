@@ -92,10 +92,15 @@ BOOL C3DBipedRobotDlg::OnInitDialog()
 	// 3DBipedRobot Setting
 	InitGeometry();
 
+	// 3DBipedRobot Viewer Setting
 	m_pViewerDlg = new CViewerDlg(this);
 	m_pViewerDlg->Create(IDD_VIEWERDLG);
 	m_pViewerDlg->ShowWindow(SW_SHOW);
 	m_pViewerDlg->SetWindowPos(&CViewerDlg::wndTop, 700, 400, 0, 0, SWP_NOZORDER|SWP_NOSIZE);
+
+	// Serial Comm Setting
+	m_pComm.SetHwnd(m_hWnd);
+	
 
 	// 초기화 완료
 	m_bReady = TRUE;
@@ -159,12 +164,15 @@ void C3DBipedRobotDlg::Render()
 {
 	m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(240,240,240), 1.f, 0);
 
+	// Test!!!!!!!!!!
+	m_pNodeMgr->SetWeight();
+
 	// Simulation 에서 변화된 행렬을 Animation 적용
 	// 무게중심 계산
 	m_pNodeMgr->Animate();
 
-	// 무게중심 적용 (현재의 무게중심으로 다음번에 힘이 가해짐)
-	m_pNodeMgr->SetWeight();
+//	// 무게중심 적용 (현재의 무게중심으로 다음번에 힘이 가해짐)
+//	m_pNodeMgr->SetWeight();
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Viewer 출력
@@ -319,7 +327,64 @@ void C3DBipedRobotDlg::Cleanup()
 		m_pD3D->Release();
 }
 
+void C3DBipedRobotDlg::InitSerialComm()
+{
+	m_nSettingPort   = m_pViewerDlg->m_comboPort.GetCurSel()+1;
+	m_nSettingParity = 0;
+	m_nSettingBaud   = m_pViewerDlg->m_comboBaudrate.GetCurSel();
+	m_nSettingData   = 1;
+	m_nSettingStop   = 0;
+	m_nSettingFlow   = 0;
+}
+
+TTYSTRUCT C3DBipedRobotDlg::Int2TTY()
+{
+	TTYSTRUCT tty;
+	ZERO_MEMORY(tty);
+
+	tty.byCommPort = (BYTE)m_nSettingPort;
+	tty.byXonXoff  = FALSE;
+	tty.byByteSize = (BYTE)_nDataValues[m_nSettingData];
+	tty.byFlowCtrl = (BYTE)_nFlow[m_nSettingFlow];
+	tty.byParity   = (BYTE)m_nSettingParity;
+	tty.byStopBits = (BYTE)_nStopBits[m_nSettingStop];
+	tty.dwBaudRate = (DWORD)_nBaudRates[m_nSettingBaud];
+
+	return tty;
+}
+
+void C3DBipedRobotDlg::OnBnClickedCheckConnect()
+{
+	UpdateData(TRUE);
+	
+	BOOL bCheck = ((CButton*)(m_pViewerDlg->GetDlgItem(IDC_CHECK_CONNECT)))->GetCheck();
+	if(bCheck)
+	{
+		InitSerialComm();
+		if(m_pComm.OpenCommPort(&Int2TTY()) != TRUE)
+		{
+			AfxMessageBox(L"이미 사용중이거나 Comport가 연결되지 않았습니다.");
+
+			((CButton*)(m_pViewerDlg->GetDlgItem(IDC_CHECK_CONNECT)))->SetCheck(!bCheck);
+			return;
+		}
+
+		m_pViewerDlg->GetDlgItem(IDC_CHECK_CONNECT)->SetWindowText(L"D I S C O N N E T");
+		m_pViewerDlg->GetDlgItem(IDC_COMBO_PORT)->EnableWindow(FALSE);
+		m_pViewerDlg->GetDlgItem(IDC_COMBO_BAUDRATE)->EnableWindow(FALSE);
+	}
+	else
+	{
+		m_pComm.CloseConnection();
+
+		m_pViewerDlg->GetDlgItem(IDC_CHECK_CONNECT)->SetWindowText(L"C O N N E T");
+		m_pViewerDlg->GetDlgItem(IDC_COMBO_PORT)->EnableWindow(TRUE);
+		m_pViewerDlg->GetDlgItem(IDC_COMBO_BAUDRATE)->EnableWindow(TRUE);
+	}
+}
+
 // Message Function
+
 void C3DBipedRobotDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
@@ -373,14 +438,16 @@ void C3DBipedRobotDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			   // Shift를 바꾸니 문제가 생김!!!!
 			   // 쓰레드 동기화를 해줘야 했지만 아직 못함!!!
 	case 'W' :  
-	case 'w' : m_pSimul->SetShift(m_pViewerDlg->m_fShift);
-			   m_pSimul->SetState(CSimulate::WALK);
-			   m_pViewerDlg->SetWindowText(L"Viewer.... Walking");
+	case 'w' : 
+		m_pSimul->SetOption(m_pViewerDlg->m_fShift, m_pViewerDlg->m_nVelocity, m_pViewerDlg->m_fStride);
+		m_pSimul->SetState(CSimulate::WALK);
+		m_pViewerDlg->SetWindowText(L"Viewer.... Walking");
 		break;
 
 	case 'S' :
-	case 's' : m_pSimul->SetState(CSimulate::START);
-			   m_pViewerDlg->SetWindowText(L"Viewer.... Start");
+	case 's' : 
+		m_pSimul->SetState(CSimulate::START);
+		m_pViewerDlg->SetWindowText(L"Viewer.... Start");
 		break;
 
 	case 'X':

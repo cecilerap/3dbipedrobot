@@ -14,6 +14,7 @@
 #include "Camera.h"
 #include "Simulate.h"
 #include "ViewerDlg.h"
+#include "Comm.h"
 
 // C3DBipedRobotDlg 대화 상자
 class C3DBipedRobotDlg : public CDialog
@@ -68,6 +69,24 @@ private:
 
 public:
 	void Simulation();
+
+	// Serial Comm
+private:
+	CComm m_pComm;
+
+	int m_nSettingPort;
+	int m_nSettingParity;
+	int m_nSettingBaud;
+	int m_nSettingData;
+	int m_nSettingStop;
+	int m_nSettingFlow;
+
+	void InitSerialComm();
+	TTYSTRUCT Int2TTY();
+
+public:
+	// ViewerDlg 에서 Connect 누르면 호출됨
+	void OnBnClickedCheckConnect();
 
 // 구현입니다.
 protected:
