@@ -198,6 +198,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Comm.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ForceSensor.cpp"
 				>
 			</File>
@@ -261,6 +265,10 @@
 			</File>
 			<File
 				RelativePath=".\Camera.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Comm.h"
 				>
 			</File>
 			<File

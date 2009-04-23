@@ -29,4 +29,9 @@ public:
 	float m_fShift;
 	int m_ctrlShift;
 	bool m_bGravity;	
+	int m_nVelocity;
+	float m_fStride;
+	CComboBox m_comboPort;
+	CComboBox m_comboBaudrate;
+	afx_msg void OnBnClickedCheckConnect();
 };

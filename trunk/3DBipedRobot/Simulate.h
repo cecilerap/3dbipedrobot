@@ -10,20 +10,24 @@ class C3DBipedRobotDlg;
 class CSimulate
 {
 public:
-	enum STATE { NOTHING, READY, START, WALK };
+	enum STATE { NOTHING, READY, START, WALK, FALLDOWN };
 
 public:
 	CSimulate(C3DBipedRobotDlg* pRobotDlg);
 	~CSimulate(void);
 
-	STATE GetState() { return m_state; }
-	void SetState(STATE state)	{ m_state = state; }
-	void SetShift(float _shift)	{ shift = _shift; }	
-	void Simulate();
+	void SetOption(float _shift, int velocity, float stride)
+	{ shift = _shift, TABLE = velocity, m_fStride = stride; }
 
+	STATE GetState() { return m_state; }
+	void SetState(STATE state)	{ m_state = state; }	
+	
+	void Simulate();
 	void Ready();
 	void Start();
 	void Walking();
+
+	void FallDown();
 
 private:
 	void sv_motor();
@@ -41,8 +45,8 @@ private:
 	CCriticalSection  cs;
 
 	STATE m_state;
-	float m_fBodyPos, m_fStartPos;
-
+	float m_fBodyPos, m_fStartPos, m_fStride;
+	
 	float L_shift_result, R_shift_result, sit_result;
 	float buff_motor_value_Start[18];
 	float buff_motor_value_End[18];
