@@ -16,10 +16,21 @@
 #define IDC_EDIT_LEFT2                  1006
 #define IDC_EDIT_LEFT3                  1007
 #define IDC_EDIT_LEFT4                  1008
-#define IDC_EDIT_RIGHT1                 1009
-#define IDC_EDIT_RIGHT2                 1010
-#define IDC_EDIT_RIGHT3                 1011
-#define IDC_EDIT_RIGHT4                 1012
+#define IDC_EDIT_CENTERX                1009
+#define IDC_EDIT_CENTERY                1010
+#define IDC_EDIT_CENTERZ                1011
+#define IDC_EDIT_RIGHT1                 1012
+#define IDC_EDIT_RIGHT2                 1013
+#define IDC_EDIT_RIGHT3                 1014
+#define IDC_EDIT_RIGHT4                 1015
+#define IDC_EDIT_A                      1016
+#define IDC_EDIT_B                      1017
+#define IDC_EDIT_C                      1018
+#define IDC_RADIO_NOSHIFT               1019
+#define IDC_RADIO_USERSHIFT             1020
+#define IDC_RADIO_DYNAMICSSHIFT         1021
+#define IDC_EDIT_SHIFT                  1022
+#define IDC_CHECK_GRAVITY               1023
 
 // Next default values for new objects
 // 
@@ -27,7 +38,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1003
+#define _APS_NEXT_CONTROL_VALUE         1025
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

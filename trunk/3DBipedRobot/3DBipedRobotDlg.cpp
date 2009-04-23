@@ -7,8 +7,6 @@
 
 #include <afxpriv.h>
 
-#include "Simulate.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -97,7 +95,7 @@ BOOL C3DBipedRobotDlg::OnInitDialog()
 	m_pViewerDlg = new CViewerDlg(this);
 	m_pViewerDlg->Create(IDD_VIEWERDLG);
 	m_pViewerDlg->ShowWindow(SW_SHOW);
-	m_pViewerDlg->SetWindowPos(&CViewerDlg::wndTop, 700, 500, 0, 0, SWP_NOZORDER|SWP_NOSIZE);
+	m_pViewerDlg->SetWindowPos(&CViewerDlg::wndTop, 700, 400, 0, 0, SWP_NOZORDER|SWP_NOSIZE);
 
 	// 초기화 완료
 	m_bReady = TRUE;
@@ -147,8 +145,9 @@ LRESULT C3DBipedRobotDlg::OnKickIdle(WPARAM wParam, LPARAM lParam)
 
 	if(m_bReady)
 	{
+		if(m_pSimul->GetState() == CSimulate::READY)
+			m_pViewerDlg->SetWindowText(L"3DBipedRobot_viewer");
 		m_pSimul->Simulate();
-//		Render();
 		return TRUE;
 	}
 
@@ -160,33 +159,54 @@ void C3DBipedRobotDlg::Render()
 {
 	m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(240,240,240), 1.f, 0);
 
+	// Simulation 에서 변화된 행렬을 Animation 적용
+	// 무게중심 계산
 	m_pNodeMgr->Animate();
+
+	// 무게중심 적용 (현재의 무게중심으로 다음번에 힘이 가해짐)
+	m_pNodeMgr->SetWeight();
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Viewer 출력
-	m_pViewerDlg->SetDlgItemInt(IDC_EDIT_THETA, m_pCamera->GetTheta());
-	m_pViewerDlg->SetDlgItemInt(IDC_EDIT_PHI, m_pCamera->GetPhi());
-	m_pViewerDlg->SetDlgItemInt(IDC_EDIT_RADIUS, m_pCamera->GetRadius());
+	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_THETA,  m_pCamera->GetTheta());
+	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_PHI,    m_pCamera->GetPhi());
+	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_RADIUS, m_pCamera->GetRadius());
 
-	UINT temp;
+	UINT tempZMP;
 	UINT retLeft  = m_pNodeMgr->m_pLeftZMP->Check();
 	UINT retRight = m_pNodeMgr->m_pRightZMP->Check();
 	for(int i = 0; i < 4; ++i)
 	{
-		temp = retLeft&0x000000FF;		// 1 이면 땅에 닿았다는 뜻
-		m_pViewerDlg->SetDlgItemInt(IDC_EDIT_LEFT1+i, temp);
+		tempZMP = retLeft&0x000000FF;		// 1 이면 땅에 닿았다는 뜻
+		m_pViewerDlg->SetDlgItemInt(IDC_EDIT_LEFT1+i, tempZMP);
 		retLeft >>= 8;
 
-		temp = retRight&0x000000FF;		// 1 이면 땅에 닿았다는 뜻
-		m_pViewerDlg->SetDlgItemInt(IDC_EDIT_RIGHT1+i, temp);
+		tempZMP = retRight&0x000000FF;		// 1 이면 땅에 닿았다는 뜻
+		m_pViewerDlg->SetDlgItemInt(IDC_EDIT_RIGHT1+i, tempZMP);
 		retRight >>= 8;
 	}
+
+	D3DXVECTOR3 tempCtWeight = m_pNodeMgr->GetCenterWeight();
+	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_CENTERX, tempCtWeight.x);
+	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_CENTERY, tempCtWeight.y);
+	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_CENTERZ, tempCtWeight.z);
+
+	// 나중에 사라질 부분!!!!!!!
+	D3DXVECTOR3 tempOldCtWeight = m_pNodeMgr->GetOldCenterWeight();
+	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_A, tempCtWeight.x - tempOldCtWeight.x);
+	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_B, tempCtWeight.y - tempOldCtWeight.y);
+	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_C, tempCtWeight.z - tempOldCtWeight.z);
 	//////////////////////////////////////////////////////////////////////////
 
 	if(SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
 		// Render 작업
 		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+		// 나중에 사라질 부분!!!!!!!!
+		m_pD3DDevice->SetStreamSource(0, m_pXYZVB, 0, sizeof(CUSTOMVERTEXXYZ));
+		m_pD3DDevice->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
+		m_pD3DDevice->DrawPrimitive(D3DPT_LINELIST, 0, 3);
 
 		// mesh 그려주는 작업
 		m_pNodeMgr->Draw();
@@ -253,6 +273,7 @@ void C3DBipedRobotDlg::InitLights()
 	m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, 0x00202020);
 }
 
+// 나중에 사라질 부분!!!!!!!
 void C3DBipedRobotDlg::InitXYZVertex()
 {
 	// x,y,z vertex
@@ -260,8 +281,8 @@ void C3DBipedRobotDlg::InitXYZVertex()
 									 {D3DXVECTOR3(300.f, 0.f, 0.f), D3DXCOLOR(0xffff0000)},
 									 {D3DXVECTOR3(0.f,   0.f, 0.f), D3DXCOLOR(0xff00ff00)},
 									 {D3DXVECTOR3(0.f, 300.f, 0.f), D3DXCOLOR(0xff00ff00)},
-									 {D3DXVECTOR3(0.f, 0.f,   0.f), D3DXCOLOR(0xff0000ff)},
-									 {D3DXVECTOR3(0.f, 0.f, 300.f), D3DXCOLOR(0xff0000ff)} };
+									 {D3DXVECTOR3(0.f, -0.78f,   0.f), D3DXCOLOR(0xff0000ff)},
+									 {D3DXVECTOR3(0.f, -0.78f, 50.5f), D3DXCOLOR(0xff0000ff)} };
 
 	if(FAILED(m_pD3DDevice->CreateVertexBuffer(sizeof(xyzVertics), 0, D3DFVF_XYZ|D3DFVF_DIFFUSE, D3DPOOL_DEFAULT, &m_pXYZVB, NULL)))
 		return;
@@ -287,6 +308,7 @@ void C3DBipedRobotDlg::DeleteObject()
 
 void C3DBipedRobotDlg::Cleanup()
 {
+	// 나중에 사라질 부분!!!!!!!
 	if(m_pXYZVB != NULL)
 		m_pXYZVB->Release();
 
@@ -341,14 +363,28 @@ BOOL C3DBipedRobotDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void C3DBipedRobotDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	m_pViewerDlg->UpdateData(TRUE);
+
 	switch(nChar)
 	{
-	case 'W' :
-	case 'w' : m_pSimul->SetState(CSimulate::WALK);
+			   // 여기서 반드시 순서 중요!!!!!
+			   // 항상 State를 보고 있다가 State 변화되면 그 때 쓰레드 생성해서 하는데
+			   // Shift를 State보다 나중에 지정해주면 이미 Walking 쓰레드가 실행되있는 상태에서
+			   // Shift를 바꾸니 문제가 생김!!!!
+			   // 쓰레드 동기화를 해줘야 했지만 아직 못함!!!
+	case 'W' :  
+	case 'w' : m_pSimul->SetShift(m_pViewerDlg->m_fShift);
+			   m_pSimul->SetState(CSimulate::WALK);
+			   m_pViewerDlg->SetWindowText(L"Viewer.... Walking");
 		break;
 
-	case 'S':
-	case 's':
+	case 'S' :
+	case 's' : m_pSimul->SetState(CSimulate::START);
+			   m_pViewerDlg->SetWindowText(L"Viewer.... Start");
+		break;
+
+	case 'X':
+	case 'x':
 //		if(g_Sock.m_sock != INVALID_SOCKET)	
 //			g_Sock.Send("hello", 5);
 		break;
@@ -364,6 +400,7 @@ void C3DBipedRobotDlg::OnDestroy()
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
 	if(m_pViewerDlg)
 		delete m_pViewerDlg;
+	m_pViewerDlg = NULL;
 }
 
 void C3DBipedRobotDlg::OnOK()

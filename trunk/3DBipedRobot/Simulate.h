@@ -2,6 +2,7 @@
 //
 
 #pragma once
+#include <afxmt.h>
 
 // 전방선언
 class C3DBipedRobotDlg;
@@ -9,16 +10,19 @@ class C3DBipedRobotDlg;
 class CSimulate
 {
 public:
-	enum STATE { NOTHING, READY, WALK };
+	enum STATE { NOTHING, READY, START, WALK };
 
 public:
 	CSimulate(C3DBipedRobotDlg* pRobotDlg);
 	~CSimulate(void);
 
-	void SetState(STATE state)					{ m_state = state; }
+	STATE GetState() { return m_state; }
+	void SetState(STATE state)	{ m_state = state; }
+	void SetShift(float _shift)	{ shift = _shift; }	
 	void Simulate();
 
 	void Ready();
+	void Start();
 	void Walking();
 
 private:
@@ -34,9 +38,10 @@ private:
 
 private:
 	C3DBipedRobotDlg* m_pRobotDlg;
+	CCriticalSection  cs;
 
 	STATE m_state;
-	float m_bodyPos;
+	float m_fBodyPos, m_fStartPos;
 
 	float L_shift_result, R_shift_result, sit_result;
 	float buff_motor_value_Start[18];
