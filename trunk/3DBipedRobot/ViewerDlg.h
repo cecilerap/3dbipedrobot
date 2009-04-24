@@ -34,4 +34,5 @@ public:
 	CComboBox m_comboPort;
 	CComboBox m_comboBaudrate;
 	afx_msg void OnBnClickedCheckConnect();
+	afx_msg void OnBnClickedButtonSenddata();
 };
