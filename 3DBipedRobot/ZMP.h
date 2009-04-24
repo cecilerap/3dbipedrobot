@@ -18,7 +18,7 @@ public:
 	void SetVertics(D3DXMATRIXA16* pMatTM);
 	void Draw();
 
-	UINT Check();
+	float Check();
 
 private:
 	LPDIRECT3DDEVICE9 m_pD3DDevice;

@@ -164,8 +164,8 @@ void C3DBipedRobotDlg::Render()
 {
 	m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(240,240,240), 1.f, 0);
 
-	// Test!!!!!!!!!!
-	m_pNodeMgr->SetWeight();
+//	// Test!!!!!!!!!!
+//	m_pNodeMgr->SetWeight();
 
 	// Simulation 에서 변화된 행렬을 Animation 적용
 	// 무게중심 계산
@@ -180,41 +180,38 @@ void C3DBipedRobotDlg::Render()
 	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_PHI,    m_pCamera->GetPhi());
 	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_RADIUS, m_pCamera->GetRadius());
 
-	UINT tempZMP;
-	UINT retLeft  = m_pNodeMgr->m_pLeftZMP->Check();
-	UINT retRight = m_pNodeMgr->m_pRightZMP->Check();
+	float retLeft  = m_pNodeMgr->m_pLeftZMP->Check();
+	float retRight = m_pNodeMgr->m_pRightZMP->Check();
 	for(int i = 0; i < 4; ++i)
 	{
-		tempZMP = retLeft&0x000000FF;		// 1 이면 땅에 닿았다는 뜻
-		m_pViewerDlg->SetDlgItemInt(IDC_EDIT_LEFT1+i, tempZMP);
-		retLeft >>= 8;
-
-		tempZMP = retRight&0x000000FF;		// 1 이면 땅에 닿았다는 뜻
-		m_pViewerDlg->SetDlgItemInt(IDC_EDIT_RIGHT1+i, tempZMP);
-		retRight >>= 8;
+		m_pViewerDlg->SetDlgItemInt(IDC_EDIT_LEFT1+i, retLeft);
+		m_pViewerDlg->SetDlgItemInt(IDC_EDIT_RIGHT1+i, retRight);
 	}
+
+// 	UINT tempZMP;
+// 	UINT retLeft  = m_pNodeMgr->m_pLeftZMP->Check();
+// 	UINT retRight = m_pNodeMgr->m_pRightZMP->Check();
+// 	for(int i = 0; i < 4; ++i)
+// 	{
+// 		tempZMP = retLeft&0x000000FF;		// 1 이면 땅에 닿았다는 뜻
+// 		m_pViewerDlg->SetDlgItemInt(IDC_EDIT_LEFT1+i, tempZMP);
+// 		retLeft >>= 8;
+// 
+// 		tempZMP = retRight&0x000000FF;		// 1 이면 땅에 닿았다는 뜻
+// 		m_pViewerDlg->SetDlgItemInt(IDC_EDIT_RIGHT1+i, tempZMP);
+// 		retRight >>= 8;
+// 	}
 
 	D3DXVECTOR3 tempCtWeight = m_pNodeMgr->GetCenterWeight();
 	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_CENTERX, tempCtWeight.x);
 	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_CENTERY, tempCtWeight.y);
 	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_CENTERZ, tempCtWeight.z);
-
-	// 나중에 사라질 부분!!!!!!!
-	D3DXVECTOR3 tempOldCtWeight = m_pNodeMgr->GetOldCenterWeight();
-	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_A, tempCtWeight.x - tempOldCtWeight.x);
-	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_B, tempCtWeight.y - tempOldCtWeight.y);
-	m_pViewerDlg->SetDlgItemFloat(IDC_EDIT_C, tempCtWeight.z - tempOldCtWeight.z);
 	//////////////////////////////////////////////////////////////////////////
 
 	if(SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
 		// Render 작업
 		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-
-		// 나중에 사라질 부분!!!!!!!!
-		m_pD3DDevice->SetStreamSource(0, m_pXYZVB, 0, sizeof(CUSTOMVERTEXXYZ));
-		m_pD3DDevice->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
-		m_pD3DDevice->DrawPrimitive(D3DPT_LINELIST, 0, 3);
 
 		// mesh 그려주는 작업
 		m_pNodeMgr->Draw();
@@ -230,7 +227,6 @@ void C3DBipedRobotDlg::InitGeometry()
 	InitObject();
 	InitMatrix();
 	InitLights();
-	InitXYZVertex();
 }
 
 void C3DBipedRobotDlg::InitObject()
@@ -281,27 +277,6 @@ void C3DBipedRobotDlg::InitLights()
 	m_pD3DDevice->SetRenderState(D3DRS_AMBIENT, 0x00202020);
 }
 
-// 나중에 사라질 부분!!!!!!!
-void C3DBipedRobotDlg::InitXYZVertex()
-{
-	// x,y,z vertex
-	CUSTOMVERTEXXYZ xyzVertics[] = { {D3DXVECTOR3(  0.f, 0.f, 0.f), D3DXCOLOR(0xffff0000)},
-									 {D3DXVECTOR3(300.f, 0.f, 0.f), D3DXCOLOR(0xffff0000)},
-									 {D3DXVECTOR3(0.f,   0.f, 0.f), D3DXCOLOR(0xff00ff00)},
-									 {D3DXVECTOR3(0.f, 300.f, 0.f), D3DXCOLOR(0xff00ff00)},
-									 {D3DXVECTOR3(0.f, -0.78f,   0.f), D3DXCOLOR(0xff0000ff)},
-									 {D3DXVECTOR3(0.f, -0.78f, 50.5f), D3DXCOLOR(0xff0000ff)} };
-
-	if(FAILED(m_pD3DDevice->CreateVertexBuffer(sizeof(xyzVertics), 0, D3DFVF_XYZ|D3DFVF_DIFFUSE, D3DPOOL_DEFAULT, &m_pXYZVB, NULL)))
-		return;
-
-	VOID* pVertices;
-	if(FAILED(m_pXYZVB->Lock(0, sizeof(xyzVertics), (void**)&pVertices, 0)))
-		return;
-	memcpy(pVertices, xyzVertics, sizeof(xyzVertics));
-	m_pXYZVB->Unlock();
-}
-
 void C3DBipedRobotDlg::DeleteObject()
 {
 	if(m_pNodeMgr != NULL)
@@ -316,10 +291,6 @@ void C3DBipedRobotDlg::DeleteObject()
 
 void C3DBipedRobotDlg::Cleanup()
 {
-	// 나중에 사라질 부분!!!!!!!
-	if(m_pXYZVB != NULL)
-		m_pXYZVB->Release();
-
 	if(m_pD3DDevice != NULL)
 		m_pD3DDevice->Release();
 
@@ -355,7 +326,7 @@ TTYSTRUCT C3DBipedRobotDlg::Int2TTY()
 
 void C3DBipedRobotDlg::OnBnClickedCheckConnect()
 {
-	UpdateData(TRUE);
+	m_pViewerDlg->UpdateData(TRUE);
 	
 	BOOL bCheck = ((CButton*)(m_pViewerDlg->GetDlgItem(IDC_CHECK_CONNECT)))->GetCheck();
 	if(bCheck)
@@ -372,6 +343,7 @@ void C3DBipedRobotDlg::OnBnClickedCheckConnect()
 		m_pViewerDlg->GetDlgItem(IDC_CHECK_CONNECT)->SetWindowText(L"D I S C O N N E T");
 		m_pViewerDlg->GetDlgItem(IDC_COMBO_PORT)->EnableWindow(FALSE);
 		m_pViewerDlg->GetDlgItem(IDC_COMBO_BAUDRATE)->EnableWindow(FALSE);
+		m_pViewerDlg->GetDlgItem(IDC_BUTTON_SENDDATA)->EnableWindow(TRUE);
 	}
 	else
 	{
@@ -380,7 +352,21 @@ void C3DBipedRobotDlg::OnBnClickedCheckConnect()
 		m_pViewerDlg->GetDlgItem(IDC_CHECK_CONNECT)->SetWindowText(L"C O N N E T");
 		m_pViewerDlg->GetDlgItem(IDC_COMBO_PORT)->EnableWindow(TRUE);
 		m_pViewerDlg->GetDlgItem(IDC_COMBO_BAUDRATE)->EnableWindow(TRUE);
+		m_pViewerDlg->GetDlgItem(IDC_BUTTON_SENDDATA)->EnableWindow(FALSE);
 	}
+}
+
+void C3DBipedRobotDlg::SendData()
+{
+	m_pViewerDlg->UpdateData(TRUE);
+
+	unsigned char TX_Motion[4];
+	TX_Motion[0] = 1;			// 무조건 1
+	TX_Motion[1] = m_pViewerDlg->GetDlgItemInt(IDC_EDIT_STRIDE);
+	TX_Motion[2] = m_pViewerDlg->GetDlgItemInt(IDC_EDIT_SPEED)-33;			// 수정할것!!!!
+	TX_Motion[3] = m_pViewerDlg->GetDlgItemInt(IDC_EDIT_SHIFT);
+
+	m_pComm.WriteCommBlock((LPSTR)TX_Motion, 4);
 }
 
 // Message Function
@@ -439,7 +425,7 @@ void C3DBipedRobotDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			   // 쓰레드 동기화를 해줘야 했지만 아직 못함!!!
 	case 'W' :  
 	case 'w' : 
-		m_pSimul->SetOption(m_pViewerDlg->m_fShift, m_pViewerDlg->m_nVelocity, m_pViewerDlg->m_fStride);
+		m_pSimul->SetOption(m_pViewerDlg->m_fShift, m_pViewerDlg->m_nVelocity, m_pViewerDlg->m_fStride-20.f);
 		m_pSimul->SetState(CSimulate::WALK);
 		m_pViewerDlg->SetWindowText(L"Viewer.... Walking");
 		break;
@@ -450,10 +436,14 @@ void C3DBipedRobotDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		m_pViewerDlg->SetWindowText(L"Viewer.... Start");
 		break;
 
-	case 'X':
-	case 'x':
-//		if(g_Sock.m_sock != INVALID_SOCKET)	
-//			g_Sock.Send("hello", 5);
+	case 'F' :  
+	case 'f' : 
+		m_pSimul->SetOption(m_pViewerDlg->m_fShift, m_pViewerDlg->m_nVelocity, m_pViewerDlg->m_fStride-20.f);
+		m_pSimul->SetState(CSimulate::FALLDOWN);
+		m_pViewerDlg->SetWindowText(L"Viewer.... Falldown");
+		break;
+
+	default:
 		break;
 	}
 

@@ -57,13 +57,14 @@ private:
 		D3DXCOLOR color;
 	};
 
+public:			// Simulation zMP 때문에!!!!!!
 	CViewerDlg* m_pViewerDlg;
 
+private:
 	void InitGeometry();
 	void InitObject();
 	void InitMatrix();
 	void InitLights();
-	void InitXYZVertex();
 	void DeleteObject();
 	void Cleanup();
 
@@ -85,8 +86,8 @@ private:
 	TTYSTRUCT Int2TTY();
 
 public:
-	// ViewerDlg 에서 Connect 누르면 호출됨
-	void OnBnClickedCheckConnect();
+	void OnBnClickedCheckConnect();		// ViewerDlg 에서 Connect 누르면 호출됨
+	void SendData();
 
 // 구현입니다.
 protected:

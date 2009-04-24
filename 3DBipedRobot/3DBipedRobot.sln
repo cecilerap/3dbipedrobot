@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DBipedRobot", "3DBipedRobot.vcproj", "{83A69A9D-316C-4949-9D2A-BA0FF2803BB1}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "3DBipedRobotSetup", "..\Setup1\Setup1.vdproj", "{A63A2406-CA18-4AC0-ACC3-EDC80D3C492E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +15,8 @@ Global
 		{83A69A9D-316C-4949-9D2A-BA0FF2803BB1}.Debug|Win32.Build.0 = Debug|Win32
 		{83A69A9D-316C-4949-9D2A-BA0FF2803BB1}.Release|Win32.ActiveCfg = Release|Win32
 		{83A69A9D-316C-4949-9D2A-BA0FF2803BB1}.Release|Win32.Build.0 = Release|Win32
+		{A63A2406-CA18-4AC0-ACC3-EDC80D3C492E}.Debug|Win32.ActiveCfg = Debug
+		{A63A2406-CA18-4AC0-ACC3-EDC80D3C492E}.Release|Win32.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

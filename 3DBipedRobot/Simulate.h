@@ -28,6 +28,7 @@ public:
 	void Walking();
 
 	void FallDown();
+	void ZMP(float arr1[4], float arr2[4]);
 
 private:
 	void sv_motor();
